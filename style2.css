@@ -1,0 +1,27 @@
+#fractal {
+    width: 100%;
+    /*Error al descargar imagenes en celular*/
+}
+
+.fractalSkin {
+    width: 100%;
+    height: 100%;
+    border: 2px solid black;
+    /* Ejemplo de borde negro */
+    background-color: rgb(173, 216, 230);
+    /* Ejemplo de color de fondo azul claro */
+    /* Otros estilos que desees aplicar */
+}
+
+.sliderSkin {
+    width: 100%;
+}
+
+.Texto {
+    text-align: justify;
+}
+.Imagen {
+    width: 95%;
+    height: auto;
+    display: block;
+}
