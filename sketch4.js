@@ -3,6 +3,8 @@ let fractalDiv;
 let divWidth, divHeight
 let length, proportion, maxlevel, colorPicker, uploadedImage, logo_im, logo_unam, marco;
 let canvas;
+let numgens;
+let imgCopy;
 
 function setup() {
   //Contenedor
@@ -36,6 +38,12 @@ function setup() {
   lengthSlider = createSlider(divWidth / 10, divWidth / 2, divWidth / 5, 0);
   lengthSlider.parent("slider");
   lengthSlider.class("sliderSkin");
+  //Slider caras
+  let text4 = createP('Caras');
+  text4.parent("slider");
+  generatorSlider = createSlider(4 , 14, 4 , 2);
+  generatorSlider.parent("slider");
+  generatorSlider.class("sliderSkin");
   //ColorPicker del fondo
   let texto_color = createP("Color del fondo");
   texto_color.parent("slider");
@@ -48,42 +56,95 @@ function setup() {
   colorPickerCuadro = createColorPicker(color(random(0, 255), random(0, 255), random(0, 255)));
   colorPickerCuadro.parent("slider");
   colorPickerCuadro.class("sliderSkin");
-
   //Deteccion de cambios
   iterationsSlider.changed(drawFractal);
   proportionSlider.changed(drawFractal);
   lengthSlider.changed(drawFractal);
+  generatorSlider.changed(drawFractal);
   colorPicker.changed(drawFractal);
-
+  colorPickerCuadro.changed(drawFractal);
   // Evento para cambiar el colorPicker
   colorPicker.input(changeBackgroundColor);
+  colorPickerCuadro.input(drawFractal);
+  //Dibujar fractal
+  translate(width / 2, height / 2);
+  drawFractal();
+}
+
+function generateVertex(scale=1){
+  let vertices = [];
+  let theta = PI/numgens
+  for(let i=0; i<numgens;i++){
+    p = createVector(scale*length*cos(2*PI*i/numgens+theta),scale*length*sin(2*PI*i/numgens+theta));
+    append(vertices, p);
+  }
+  append(vertices, createVector(-length,-length));
+  return vertices;
+}
+//level no se usa jaja
+function drawPolygon(p,_level){
+  fill(colorPickerCuadro.value());
+  beginShape();
+  for(let i=0;i<p.length-1;i++){
+    vertex(p[i].x,p[i].y);
+  }
+  endShape(CLOSE);
+}
+
+function maskImage(){
+  imgCopy = uploadedImage.get();
+  imgCopy.resize(2*length,2*length);
+  let mascara = createGraphics(2*length,2*length);
+  let vertices = generateVertex();
+  mascara.beginShape();
+  for(let i=0; i<vertices.length-1;i++){
+    mascara.vertex(vertices[i].x+length, vertices[i].y+length);
+  }
+  mascara.endShape(CLOSE);
+  imgCopy.mask(mascara);
 }
 
 
-function draw() {
-  clear()
-
-  translate(width / 2, height / 2);
-  //translate(divWidth / 2,height/2);
-  //translate(canvas.width / 2,canvas.height/2);
-  drawFractal();
-
-  //image(logo_im, -canvas.width/2+5, -canvas.height/2 , canvas.width/12, canvas.width/12);
-  //image(logo_unam, -canvas.width/2 +10, -canvas.height/2, canvas.width/13, canvas.width/13);
+//Pero aqui si
+function drawPolyPhoto(p, level){
+  a = 2*length*proportion**level;
+  image(imgCopy, p[p.length-1].x, p[p.length-1].y,a,a);
 }
 
 function drawFractal() {
+  //Limpiamos
+  clear();
+  
+  //Escuchamos los valores
   maxlevel = iterationsSlider.value();
   proportion = proportionSlider.value();
   length = lengthSlider.value();
-  h = length / 2;
-  f_1 = funciones(createVector(h, -h));
-  g_1 = funciones(createVector(h, h));
-  f_2 = funciones(createVector(-h, h));
-  g_2 = funciones(createVector(-h, -h));
-  transformaciones = [f_1, g_1, f_2, g_2];
-  drawOrbit(transformaciones, createVector(-h, -h));
+  numgens = generatorSlider.value();
+
+  //Creamos las transformaciones que generaran el fractal
+  let transformaciones =[];
+  for(let i = 0; i<numgens;i++){
+    append(transformaciones, funciones(createVector
+    (length*cos(2*PI*(i)/numgens+PI/numgens),
+    length*sin(2*PI*(i)/numgens+PI/numgens))));
+  }
+
+  //Generamos los vertices y empezamos a dibujar.
+  vertices = generateVertex();
+  let dibujar;
+
+  if (uploadedImage){
+    maskImage();
+    dibujar = drawPolyPhoto;
+  }else{
+    dibujar = drawPolygon;
+  }
+
+  drawOrbit(transformaciones,vertices,dibujar);
 }
+
+//Crea las funciones generadoras
+//Es una funcion que desplaza hacia direccion y escala por proporcion
 function funciones(direccion) {
   return function (p) {
     return p5.Vector.add(
@@ -91,55 +152,61 @@ function funciones(direccion) {
         p5.Vector.add(p, direccion), proportion), direccion);
   }
 }
+
+//Crea una lista de las direcciones posibles para cada direccion
 function createIndexesNotInverse() {
   let inotinverse = [];
   let kinv;
-  for (let k = 1; k <= 4; k++) {
-    kinv = ((k + 1) % 4);
+  for (let k=1; k<=numgens;k++){
+    kinv = ((k + numgens/2 - 1) % numgens);
+    
     let a = [];
     let b = [];
-    for (let j = kinv + 1; j < 4; j++) {
-      append(a, j); 250
+    for(let j = kinv+1;j<numgens;j++){
+      append(a,j);
     }
-    for (let j = 0; j <= kinv - 1; j++) {
-      append(b, j);
+    for(let j = 0;j<=kinv-1;j++){
+      append(b,j);
     }
     c = a.concat(b);
     inotinverse.push(c);
   }
   return inotinverse;
 }
-function drawOrbit(transformaciones, p) {
+
+function drawOrbit(transformaciones, p,dibujo){
   indexesNotInverse = createIndexesNotInverse();
 
-  function traverseForward(p, index, level) {
-    if (uploadedImage) {
-      image(uploadedImage, p.x, p.y, length * (proportion ** (level)), length * (proportion ** (level)));
-
-    } else {
-      fill(colorPickerCuadro.value());
-      square(p.x, p.y, length * (proportion ** (level)));
-    }
-
-    if (level >= maxlevel) {
+  function traverseForward(p, index, level){
+    dibujo(p, level);
+    //Si ya acabamos o el diametro es muy pequeño salimos
+    difference = p5.Vector.sub(p[0],p[numgens/2]);
+    if (level >= maxlevel ||mag(difference.x,difference.y) < length/18){
       return;
     }
     let indices = indexesNotInverse[index];
-    for (let i = 0; i < 3; i++) {
-      traverseForward(transformaciones[indices[i]](p), indices[i], level + 1);
+    //Recorremos las posibles direcciones
+    for (let i=0; i<numgens-1;i++){
+      let f_p =[];
+      for(let j=0;j< p.length;j++){
+        append( f_p,transformaciones[indices[i]](p[j]) );
+      }
+      traverseForward(f_p, indices[i], level+1);
     }
   }
-  if (uploadedImage) {
-    image(uploadedImage, p.x, p.y, length, length);
-  } else {
-    fill(colorPickerCuadro.value())
-    square(p.x, p.y, length);
-  }
-
-  for (let i = 0; i < 4; i++) {
-    traverseForward(transformaciones[i](p), i, 1);
+  //Dibujamos 
+  dibujo(p, 0);
+  for(let i = 0;i<numgens;i++){
+    //Vamos a aplicar cada transformacion al poligono
+    let f_p =[];
+    for(let j=0;j< p.length;j++){
+      append( f_p,transformaciones[i](p[j]));
+    }
+    //Y nos vamos
+    traverseForward(f_p,i,1);
   }
 }
+
 function preload() {
   //logo_im = loadImage("imgs/im.png");
   //logo_unam = loadImage("imgs/unam.png");
@@ -197,3 +264,4 @@ function descargarImagen() {
   //Descarga del  nuevo canvas
   imagenDescargar.save("Fractal.png");
 }
+//jeje
