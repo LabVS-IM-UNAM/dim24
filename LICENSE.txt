@@ -1,4 +1,4 @@
-Este software es desarrollado por Dylan Alexis Facio, Rubén Andrés Baca, Iñaki Mendieta Noguez, 
+Este software es desarrollado por Dylan Alexis Facio, Iñaki Mendieta Noguez, 
 Emilio Junoy de Juambelz, Pablo de la Fuente Parres, Hugo Giovani Ramírez y Darío Alatorre 
 para el Laboratorio de Visualización y Sonorización del Instituto de Matemáticas de la UNAM, 
 basados en una idea original de Darío Alatorre y Bruno Cisneros. 
