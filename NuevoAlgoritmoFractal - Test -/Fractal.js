@@ -26,6 +26,7 @@ function setup() {
   let colorPickerBackground = document.getElementById("colorBackground");
   let colorPickerFractal = document.getElementById("colorFractal");
   let colorPickerContorno = document.getElementById("colorContornoFractal");
+  let boton = document.getElementById("boton")
 
   sliderProporcion.addEventListener("input", function () {
     PROPORCION = parseFloat(sliderProporcion.value);
@@ -55,7 +56,7 @@ function setup() {
     COLOR_CONTORNO_FRACTAL = this.value;
     Dibujar();
   })
-
+  boton.addEventListener("click", function(){saveCanvas()})
 
 }
 
