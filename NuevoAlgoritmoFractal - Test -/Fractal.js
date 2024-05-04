@@ -56,7 +56,7 @@ function setup() {
     COLOR_CONTORNO_FRACTAL = this.value;
     Dibujar();
   })
-  boton.addEventListener("click", function(){saveCanvas()})
+  boton.addEventListener("click", function(){saveCanvas("Fractal")})
 
 }
 
