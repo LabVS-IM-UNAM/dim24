@@ -5,8 +5,6 @@ let ITERACIONES = 5;
 let NUMERO_VERTICES = 4;
 let COLOR_BACKGROUND, COLOR_FRACTAL, COLOR_CONTORNO_FRACTAL, IMAGEN;
 
-
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
   //IMAGEN.resize(50,0);
@@ -14,7 +12,6 @@ function setup() {
   COLOR_BACKGROUND = color("#ffffff");
   COLOR_FRACTAL = color("#000000");
   COLOR_CONTORNO_FRACTAL = color("#000000");
-
 
   Dibujar();
 
@@ -71,10 +68,7 @@ function Dibujar() {
   rotate(PI / NUMERO_VERTICES)
   DibujarFractal(0, 0, createVector(0, 0), ZOOM, NUMERO_VERTICES, ITERACIONES);
   pop();
-
 }
-
-
 /*  DibujarFractal:
     Dibuja un fractal de poligonos con parametros:
     -->   centro: (centroX, centroY), la posicion donde se empieza a dibujar el fractal
@@ -91,7 +85,7 @@ function DibujarFractal(centroX, centroY, vertice, radio, numVertices, iteracion
     let listaVertices = InformacionPoligono(centroX, centroY, vertice, radio, numVertices, iteraciones);
     //  Para la siguiente iteracion
     let nuevoCentroX, nuevoCentroY, nuevoVertice;
-    /*  
+    /*
       Para cada vertice del poligono anterior:
       -->   Asignamos ese vertice para no dibujar un poligono.
       -->   Buscamos un centro nuevo para dibujar nuestro poligono.
@@ -123,7 +117,7 @@ function DibujarFractal(centroX, centroY, vertice, radio, numVertices, iteracion
 }
 
 /*  InformacionPoligono:
-    Almacena informacion relacionada a la posicion y angulo respecto al eje X de los vertices del poligono a 
+    Almacena informacion relacionada a la posicion y angulo respecto al eje X de los vertices del poligono a
     excepcion de 1.
     -->   centro: (centroX, centroY), la posicion donde se empieza a dibujar el poligono.
     -->   radio: Distancia de cada vertice con el centro.
@@ -226,6 +220,7 @@ function DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones) {
 }
 
 
+
 //Función para que el oscilador suene como un metrónomo.
 function startMetronome(){
   //Crear la lista con osciladores
@@ -235,12 +230,12 @@ function startMetronome(){
   for (let i = 0; i <= ITERACIONES; i++) {
     let osc = new p5.Oscillator();
     osc.setType('sine');
-    osc.freq(200*i); 
-    osc.amp(0.5); 
-    oscillators.push(osc); 
+    osc.freq(200*i);
+    osc.amp(0.5);
+    oscillators.push(osc);
     isPlaying.push(false);
    }
-  //Hacer que suenen como metrónomo 
+  //Hacer que suenen como metrónomo
   for (let i = 0; i <= ITERACIONES; i++) {
    setInterval(function() {
      if (isPlaying[i]) {
