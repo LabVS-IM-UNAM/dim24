@@ -3,10 +3,9 @@ let PROPORCION = 0.5;
 let ZOOM = 100;
 let ITERACIONES = 5;
 let NUMERO_VERTICES = 4;
-let COLOR_BACKGROUND;
-let COLOR_FRACTAL;
-let COLOR_CONTORNO_FRACTAL;
-let IMAGEN;
+let COLOR_BACKGROUND, COLOR_FRACTAL, COLOR_CONTORNO_FRACTAL, IMAGEN;
+
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -15,6 +14,7 @@ function setup() {
   COLOR_BACKGROUND = color("#ffffff");
   COLOR_FRACTAL = color("#000000");
   COLOR_CONTORNO_FRACTAL = color("#000000");
+
 
   Dibujar();
 
@@ -71,7 +71,10 @@ function Dibujar() {
   rotate(PI / NUMERO_VERTICES)
   DibujarFractal(0, 0, createVector(0, 0), ZOOM, NUMERO_VERTICES, ITERACIONES);
   pop();
+
 }
+
+
 /*  DibujarFractal:
     Dibuja un fractal de poligonos con parametros:
     -->   centro: (centroX, centroY), la posicion donde se empieza a dibujar el fractal
@@ -220,4 +223,33 @@ function DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones) {
     vertex(sx, sy);
   }
   endShape(CLOSE);
+}
+
+
+//Función para que el oscilador suene como un metrónomo.
+function startMetronome(){
+  //Crear la lista con osciladores
+  let oscillators = [];
+  let isPlaying = [];
+
+  for (let i = 0; i <= ITERACIONES; i++) {
+    let osc = new p5.Oscillator();
+    osc.setType('sine');
+    osc.freq(200*i); 
+    osc.amp(0.5); 
+    oscillators.push(osc); 
+    isPlaying.push(false);
+   }
+  //Hacer que suenen como metrónomo 
+  for (let i = 0; i <= ITERACIONES; i++) {
+   setInterval(function() {
+     if (isPlaying[i]) {
+       oscillators[i].stop();
+       isPlaying[i] = false;
+     } else {
+       oscillators[i].start();
+       isPlaying[i] = true;
+     }
+   }, floor(1000/(i+1))); //El i-ésimo oscilador sonará cada 1/(i+1) segundos.
+ }
 }
