@@ -4,6 +4,7 @@ let ZOOM = 100;
 let ITERACIONES = 5;
 let NUMERO_VERTICES = 4;
 let COLOR_BACKGROUND, COLOR_FRACTAL, COLOR_CONTORNO_FRACTAL, IMAGEN;
+let startX, startY, endX, endY;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -53,7 +54,7 @@ function setup() {
     COLOR_CONTORNO_FRACTAL = this.value;
     Dibujar();
   })
-  boton.addEventListener("click", function(){saveCanvas("Fractal")})
+  boton.addEventListener("click", saveFractal()) //modifiqué la función que toma
 
 }
 
@@ -219,7 +220,43 @@ function DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones) {
   endShape(CLOSE);
 }
 
+//2 funciones para obtener coordenadas del rectángulo seleccionador.
+function mousePressed() {
+  startX = mouseX;
+  startY = mouseY;
+}
 
+function mouseReleased() {
+  endX = mouseX;
+  endY = mouseY;
+  Dibujar();
+  noFill();
+  stroke(50);
+  rect(startX, startY, endX-startX, endY-startY);
+}
+
+//Funcion para descargar la imagen
+function saveFractal() {
+  //Medidas recorte y centro
+  let x = (canvas.width - canvas.height) / 2;
+  let y = 0;
+  let w = canvas.width;
+  let h = canvas.height;
+
+  //Creacion del canvas cuadrado
+  let imagenDescargar = createGraphics(h, h);
+  //Asignacion de color al fondo del canvas para que se vea en la descarga
+  imagenDescargar.background(colorPicker.color())
+
+
+  //        Aqui se podra agregar un marco.       //
+
+
+  //Recorte del canvas
+  imagenDescargar.image(canvas.get(x, y, w, h), 0, 0);
+  //Descarga del  nuevo canvas
+  imagenDescargar.save("Fractal.png");
+}
 
 //Función para que el oscilador suene como un metrónomo.
 function startMetronome(){
