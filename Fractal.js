@@ -54,7 +54,7 @@ function setup() {
     COLOR_CONTORNO_FRACTAL = this.value;
     Dibujar();
   })
-  boton.addEventListener("click", saveFractal()) //modifiqué la función que toma
+  boton.addEventListener("click", saveFractal) //modifiqué la función que toma
 
 }
 
@@ -222,6 +222,7 @@ function DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones) {
 
 //2 funciones para obtener coordenadas del rectángulo seleccionador.
 function mousePressed() {
+  clear();
   startX = mouseX;
   startY = mouseY;
 }
