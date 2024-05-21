@@ -1,16 +1,13 @@
 //  valores predeterminados
 let PROPORCION = 0.5;
 let ZOOM = 100;
-let ITERACIONES = 1;
-let NUMERO_VERTICES = 3;
+let ITERACIONES = 5;
+let NUMERO_VERTICES = 4;
 let COLOR_BACKGROUND, COLOR_FRACTAL, COLOR_CONTORNO_FRACTAL, IMAGEN;
-
-function preload() {
-  IMAGEN = loadImage("./Test.jpg");
-}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  //IMAGEN.resize(50,0);
 
   COLOR_BACKGROUND = color("#ffffff");
   COLOR_FRACTAL = color("#000000");
@@ -56,7 +53,7 @@ function setup() {
     COLOR_CONTORNO_FRACTAL = this.value;
     Dibujar();
   })
-  boton.addEventListener("click", function () { saveCanvas("Fractal") })
+  boton.addEventListener("click", function(){saveCanvas("Fractal")})
 
 }
 
@@ -85,9 +82,6 @@ function DibujarFractal(centroX, centroY, vertice, radio, numVertices, iteracion
   //  Para iteraciones positivas distintas de cero.
   if (iteraciones > 0) {
     DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones - 1);
-    DigujarImagen(centroX, centroY, radio, numVertices, iteraciones - 1);
-
-
     let listaVertices = InformacionPoligono(centroX, centroY, vertice, radio, numVertices, iteraciones);
     //  Para la siguiente iteracion
     let nuevoCentroX, nuevoCentroY, nuevoVertice;
@@ -97,8 +91,6 @@ function DibujarFractal(centroX, centroY, vertice, radio, numVertices, iteracion
       -->   Buscamos un centro nuevo para dibujar nuestro poligono.
       -->   Llamamos esta función para realizar el proceso para cada vertice las iteraciones necesarias.
     */
-
-
     for (let v = 0; v < listaVertices[0].length; v++) {
       let X = listaVertices[0][v].x;
       let Y = listaVertices[0][v].y;
@@ -118,6 +110,7 @@ function DibujarFractal(centroX, centroY, vertice, radio, numVertices, iteracion
         nuevoCentroX = X + cos(angle) * radioReducido;
         nuevoCentroY = Y + sin(angle) * radioReducido;
       }
+
       DibujarFractal(nuevoCentroX, nuevoCentroY, nuevoVertice, radioReducido, numVertices, iteraciones - 1)
     }
   }
@@ -199,66 +192,37 @@ function InformacionPoligono(centroX, centroY, vertice, radio, numVertices, iter
     -->   iteraciones: La iteracion en la que se encuentra el poligono.
 */
 function DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones) {
+  //  Calculo del ángulo para rotar cada vertice de poligonos
   const ANGULO = TWO_PI / numVertices;
-
-
+  //  Dibujo del poligono
+  beginShape();
+  //  Color
   stroke(COLOR_CONTORNO_FRACTAL)
   fill(COLOR_FRACTAL);
 
-  beginShape();
+  let sx, sy;
   for (let a = 0; a < TWO_PI; a += ANGULO) {
-    let sx = setSx(numVertices, iteraciones, centroX, a, radio);
-    let sy = setSy(numVertices, iteraciones, centroY, a, radio);
+    if (numVertices % 2 == 1) {
+      if (iteraciones % 2 == 0) {
+        sx = centroX + cos(a + PI) * radio;
+        sy = centroY + sin(a) * radio;
+      } else {
+        sx = centroX + cos(a) * radio;
+        sy = centroY + sin(a) * radio;
+      }
+    } else {
+      sx = centroX + cos(a) * radio;
+      sy = centroY + sin(a) * radio;
+    }
     vertex(sx, sy);
   }
   endShape(CLOSE);
-
 }
 
-function DigujarImagen(centroX, centroY, radio, numVertices, iteraciones) {
-  const ANGULO = TWO_PI / numVertices;
-
-  const WIDTHMASK = 2 * radio;
-  const HEIGHTMASK = 2 * radio;
-  const WIDTHIMAGE = WIDTHMASK - 5;
-  const HEIGHTIMAGE = HEIGHTMASK - 5;
-
-  let shape = createGraphics(WIDTHMASK, HEIGHTMASK);
-  shape.clear();
-
-  shape.stroke(COLOR_CONTORNO_FRACTAL);
-  shape.fill(COLOR_CONTORNO_FRACTAL)
-  shape.beginShape();
-  for (let a = 0; a < TWO_PI; a += ANGULO) {
-    let su = setSx(numVertices, iteraciones, shape.width / 2, a, radio);
-    let sv = setSy(numVertices, iteraciones, shape.height / 2, a, radio);
-    shape.vertex(su, sv);
-  }
-  shape.endShape(CLOSE);
-
-  let imageMasked = createImage(WIDTHMASK, HEIGHTMASK);
-  imageMasked.copy(IMAGEN, 0, 0, IMAGEN.width, IMAGEN.height, 0, 0, WIDTHMASK, HEIGHTMASK);
-
-  push()
-  translate(centroX, centroY);
-  imageMode(CENTER);
-
-  image(shape, 0, 0)
-  imageMasked.mask(shape);
-  image(imageMasked, 0, 0, WIDTHIMAGE, HEIGHTIMAGE);
-  pop()
-}
-
-function setSx(numVertices, iteraciones, centroX, a, radio) {
-  return numVertices % 2 == 1 ? (iteraciones % 2 == 0 ? centroX + cos(a + PI) * radio : centroX + cos(a) * radio) : centroX + cos(a) * radio;
-}
-function setSy(numVertices, iteraciones, centroY, a, radio) {
-  return sy = numVertices % 2 == 1 ? (iteraciones % 2 == 0 ? centroY + sin(a) * radio : centroY + sin(a) * radio) : centroY + sin(a) * radio;
-}
 
 
 //Función para que el oscilador suene como un metrónomo.
-function startMetronome() {
+function startMetronome(){
   //Crear la lista con osciladores
   let oscillators = [];
   let isPlaying = [];
@@ -266,21 +230,21 @@ function startMetronome() {
   for (let i = 0; i <= ITERACIONES; i++) {
     let osc = new p5.Oscillator();
     osc.setType('sine');
-    osc.freq(200 * i);
+    osc.freq(200*i);
     osc.amp(0.5);
     oscillators.push(osc);
     isPlaying.push(false);
-  }
+   }
   //Hacer que suenen como metrónomo
   for (let i = 0; i <= ITERACIONES; i++) {
-    setInterval(function () {
-      if (isPlaying[i]) {
-        oscillators[i].stop();
-        isPlaying[i] = false;
-      } else {
-        oscillators[i].start();
-        isPlaying[i] = true;
-      }
-    }, floor(1000 / (i + 1))); //El i-ésimo oscilador sonará cada 1/(i+1) segundos.
-  }
+   setInterval(function() {
+     if (isPlaying[i]) {
+       oscillators[i].stop();
+       isPlaying[i] = false;
+     } else {
+       oscillators[i].start();
+       isPlaying[i] = true;
+     }
+   }, floor(1000/(i+1))); //El i-ésimo oscilador sonará cada 1/(i+1) segundos.
+ }
 }
