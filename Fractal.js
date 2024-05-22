@@ -4,6 +4,9 @@ let ZOOM = 100;
 let ITERACIONES = 1;
 let NUMERO_VERTICES = 3;
 let COLOR_BACKGROUND, COLOR_FRACTAL, COLOR_CONTORNO_FRACTAL, IMAGEN;
+let shape;
+let WIDTHSHAPE;
+let HEIGHTSHAPE;
 
 function preload() {
   IMAGEN = loadImage("./Test.jpg");
@@ -12,12 +15,16 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
+  shape = createGraphics(width, height);
+  WIDTHSHAPE = shape.width / 2;
+  HEIGHTSHAPE = shape.height / 2;
+
   COLOR_BACKGROUND = color("#ffffff");
   COLOR_FRACTAL = color("#000000");
   COLOR_CONTORNO_FRACTAL = color("#000000");
 
   Dibujar();
-  // startMetronome();
+  CreateMetronome(ITERACIONES);
 
 
   let sliderProporcion = document.getElementById("proporcion");
@@ -40,6 +47,7 @@ function setup() {
   sliderIteraciones.addEventListener("input", function () {
     ITERACIONES = parseInt(sliderIteraciones.value);
     Dibujar();
+    CreateMetronome(ITERACIONES);
   })
   sliderNumeroVertices.addEventListener("input", function () {
     NUMERO_VERTICES = parseInt(sliderNumeroVertices.value);
@@ -58,7 +66,6 @@ function setup() {
     Dibujar();
   })
   boton.addEventListener("click", function () { saveCanvas("Fractal") })
-
 }
 
 /*  Dibujar:
@@ -85,9 +92,9 @@ function DibujarFractal(centroX, centroY, vertice, radio, numVertices, iteracion
   let radioReducido = radio * PROPORCION
   //  Para iteraciones positivas distintas de cero.
   if (iteraciones > 0) {
-    DibujarImagen(centroX, centroY, radio);
-    // DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones - 1);
+    // DibujarImagen(centroX, centroY, radio);
     // DibujarMask(centroX, centroY, radio, numVertices, iteraciones - 1);
+    DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones - 1);
 
 
     let listaVertices = InformacionPoligono(centroX, centroY, vertice, radio, numVertices, iteraciones);
@@ -158,39 +165,30 @@ function InformacionPoligono(centroX, centroY, vertice = createVector(0, 0), rad
     -->   iteraciones: La iteracion en la que se encuentra el poligono.
 */
 function DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones) {
-  const ANGULO = TWO_PI / numVertices;
 
-  let angle = setAnglePair(numVertices, iteraciones);
-
+  let listVertex = CreateVertex(centroX, centroY, radio, numVertices, iteraciones);
 
   stroke(COLOR_CONTORNO_FRACTAL)
-  fill(COLOR_FRACTAL);
-  beginShape();
-  for (let a = 0; a < TWO_PI; a += ANGULO) {
-    vertex(getX(centroX, a + angle, radio), getY(centroY, a + angle, radio));
+  fill(COLOR_FRACTAL)
+  beginShape()
+  for (let i = 0; i < listVertex.length; i++) {
+    vertex(listVertex[i].x, listVertex[i].y);
   }
-  endShape(CLOSE);
-
+  endShape(CLOSE)
 }
 
 function DibujarMask(centroX, centroY, radio, numVertices, iteraciones) {
-  let ANGULO = TWO_PI / numVertices;
-
-  let currentAngle, angle = setAnglePair(numVertices, iteraciones);
-
-  let shape = createGraphics(width, height);
-  let WIDTHSHAPE = shape.width / 2;
-  let HEIGHTSHAPE = shape.height / 2;
-
+  let listVertex = CreateVertex(WIDTHSHAPE, HEIGHTSHAPE, radio, numVertices, iteraciones);
+  shape.clear();
   shape.beginShape();
-  for (let a = 0; a < TWO_PI; a += ANGULO) {
-    currentAngle = a + angle;
-    shape.vertex(getX(WIDTHSHAPE, currentAngle, radio), getY(HEIGHTSHAPE, currentAngle, radio));
+  for (let i = 0; i < listVertex.length; i++) {
+    shape.vertex(listVertex[i].x, listVertex[i].y);
   }
   shape.endShape(CLOSE);
 
-  imageMode(CENTER)
+  imageMode(CENTER);
   image(shape, centroX, centroY)
+
   // let imageMasked = createImage(WIDTHMASK, HEIGHTMASK);
   // imageMasked.copy(IMAGEN, 0, 0, IMAGEN.width, IMAGEN.height, 0, 0, WIDTHIMAGE, HEIGHTIMAGE);
 
@@ -200,8 +198,8 @@ function DibujarMask(centroX, centroY, radio, numVertices, iteraciones) {
 }
 
 function DibujarImagen(centroX, centroY, radio) {
-  let WIDTH = 2 * radio;
-  let HEIGHT = 2 * radio;
+  const WIDTH = 2 * radio;
+  const HEIGHT = 2 * radio;
   let imageScaled = createImage(WIDTH, HEIGHT);
   imageScaled.copy(IMAGEN, 0, 0, IMAGEN.width, IMAGEN.height, 0, 0, WIDTH, HEIGHT);
 
@@ -209,6 +207,17 @@ function DibujarImagen(centroX, centroY, radio) {
   image(imageScaled, centroX, centroY);
 }
 
+function CreateVertex(centroX, centroY, radio, numVertices, iteraciones) {
+  let listVertex = [];
+  const ANGULO = TWO_PI / numVertices;
+  let angle = setAnglePair(numVertices, iteraciones);
+
+  for (let a = 0; a < TWO_PI; a += ANGULO) {
+    let vertex = createVector(getX(centroX, a + angle, radio), getY(centroY, a + angle, radio));
+    listVertex.push(vertex);
+  }
+  return listVertex;
+}
 
 function setAnglePair(numVertices, iteraciones) {
   return numVertices % 2 == 1 && iteraciones % 2 == 0 ? PI : 0;
@@ -225,30 +234,3 @@ function getY(centroY, a, radio) {
 }
 
 
-//Función para que el oscilador suene como un metrónomo.
-function startMetronome() {
-  //Crear la lista con osciladores
-  let oscillators = [];
-  let isPlaying = [];
-
-  for (let i = 0; i <= ITERACIONES; i++) {
-    let osc = new p5.Oscillator();
-    osc.setType('sine');
-    osc.freq(200 * i);
-    osc.amp(0.5);
-    oscillators.push(osc);
-    isPlaying.push(false);
-  }
-  //Hacer que suenen como metrónomo
-  for (let i = 0; i <= ITERACIONES; i++) {
-    setInterval(function () {
-      if (isPlaying[i]) {
-        oscillators[i].stop();
-        isPlaying[i] = false;
-      } else {
-        oscillators[i].start();
-        isPlaying[i] = true;
-      }
-    }, floor(1000 / (i + 1))); //El i-ésimo oscilador sonará cada 1/(i+1) segundos.
-  }
-}
