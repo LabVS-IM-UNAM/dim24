@@ -1,19 +1,16 @@
 //  valores predeterminados
 let PROPORCION = 0.5;
 let ZOOM = 100;
-let ITERACIONES = 1;
-let NUMERO_VERTICES = 3;
+let ITERACIONES = 5;
+let NUMERO_VERTICES = 4;
 let COLOR_BACKGROUND, COLOR_FRACTAL, COLOR_CONTORNO_FRACTAL, IMAGEN;
 let shape;
 let WIDTHSHAPE;
 let HEIGHTSHAPE;
 
-function preload() {
-  IMAGEN = loadImage("./Test.jpg");
-}
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  //IMAGEN.resize(50,0);
 
   shape = createGraphics(width, height);
   WIDTHSHAPE = shape.width / 2;
@@ -65,8 +62,9 @@ function setup() {
     COLOR_CONTORNO_FRACTAL = this.value;
     Dibujar();
   })
+
   boton.addEventListener("click", function () { saveCanvas("Fractal") })
-}
+
 
 /*  Dibujar:
     Dibuja el fractal centrandolo en el canvas
@@ -96,7 +94,6 @@ function DibujarFractal(centroX, centroY, vertice, radio, numVertices, iteracion
     // DibujarMask(centroX, centroY, radio, numVertices, iteraciones - 1);
     DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones - 1);
 
-
     let listaVertices = InformacionPoligono(centroX, centroY, vertice, radio, numVertices, iteraciones);
 
     /*
@@ -107,6 +104,7 @@ function DibujarFractal(centroX, centroY, vertice, radio, numVertices, iteracion
     */
 
     let angleOdd = setAngleOdd(numVertices, iteraciones)
+
     for (let v = 0; v < listaVertices[0].length; v++) {
       let X = (numVertices % 2 == 1 && iteraciones % 2 == 1) ? -listaVertices[0][v].x : listaVertices[0][v].x;
       let Y = listaVertices[0][v].y;
@@ -226,11 +224,10 @@ function setAngleOdd(_numVertices, _iteraciones) {
   return _numVertices % 2 == 1 && _iteraciones % 2 == 1 ? PI : 0;
 }
 
+
 function getX(centroX, a, radio) {
   return centroX + cos(a) * radio;
 }
 function getY(centroY, a, radio) {
   return centroY + sin(a) * radio;
 }
-
-
