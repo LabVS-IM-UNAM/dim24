@@ -64,7 +64,7 @@ function setup() {
   })
 
   boton.addEventListener("click", function () { saveCanvas("Fractal") })
-
+}
 
 /*  Dibujar:
     Dibuja el fractal centrandolo en el canvas
@@ -84,7 +84,7 @@ function Dibujar() {
     -->   radio: Distancia de cada vertice con el centro.
     -->   vertice: El vertice donde no se dibujara un poligono ni sus siguientes iteraciones.
     -->   numVertices: Es la cantidad de vertices que tiene el poligono.
-    -->   iteraciones: Son las veces que se realiza recursivamente el fractal.
+    -->   itdaranhaeraciones: Son las veces que se realiza recursivamente el fractal.
 */
 function DibujarFractal(centroX, centroY, vertice, radio, numVertices, iteraciones) {
   let radioReducido = radio * PROPORCION
@@ -228,6 +228,7 @@ function setAngleOdd(_numVertices, _iteraciones) {
 function getX(centroX, a, radio) {
   return centroX + cos(a) * radio;
 }
+
 function getY(centroY, a, radio) {
   return centroY + sin(a) * radio;
 }
