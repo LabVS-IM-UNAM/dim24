@@ -20,7 +20,7 @@
         <script src="Fractal.js"></script>
     </div>
     <div class="cointainer text-center">
-        <div class="row">
+        <div class="row gy-5">
             <div class="col-6 col-md-4">
                 <label for="proporcion" class="form-label">Proporción</label>
                 <input type="range" class="form-range" min="0.2" max="1" step="0.1" id="proporcion" value="0.5">
@@ -29,8 +29,12 @@
                 <label for="zoom" class="form-label">Zoom</label>
                 <input type="range" class="form-range" min="50" max="200" step="10" id="zoom" value="100">
             </div>
+            <div class="col-6 col-md-4" class="mb-3">
+                <label for="imagen" class="form-label">¡Fractalizate!</label>
+                <input class="form-control form-control-sm" id="imagen" type="file" accept="image/*">
+            </div>
         </div>
-        <div class="row">
+        <div class="row gy-5">
             <div class="col-6 col-md-4">
                 <label for="iteraciones" class="form-label">Iteraciones</label>
                 <input type="range" class="form-range" min="1" max="5" id="iteraciones" value="5">
@@ -40,21 +44,21 @@
                 <input type="range" class="form-range" min="3" max="8" id="numeroVertices" value="4">
             </div>
             <div class="col-6 col-md-4">
-                <button id="boton">Guardar</button>
+                <button id="boton">¡Descarga tu fractal!</button>
             </div>
         </div>
-        <div class="row">
+        <div class="row gy-5">
             <div class="col-6 col-md-4">
                 <label for="colorBackground" class="form-label">Color de fondo</label>
                 <input type="color" id="colorBackground" value="#ffffff">
             </div>
             <div class="col-6 col-md-4">
                 <label for="colorFractal" class="form-label">Color del fractal</label>
-                <input type="color" id="colorFractal" value ="#000000">
+                <input type="color" id="colorFractal" value="#000000">
             </div>
             <div class="col-6 col-md-4">
                 <label for="colorContornoFractal" class="form-label">Color del contorno del fractal</label>
-                <input type="color" id="colorContornoFractal" value ="#000000">
+                <input type="color" id="colorContornoFractal" value="#000000">
             </div>
         </div>
     </div>
