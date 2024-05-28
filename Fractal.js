@@ -64,7 +64,7 @@ function setup() {
     Dibujar();
   })
   boton.addEventListener("click", function () { saveCanvas("Fractal") })
-  inputImagen.elt.addEventListener("change", IdentificarArchivo);
+  inputImagen.elt.addEventListener("change", SubirArchivo);
 }
 
 /*  Dibujar:
@@ -242,7 +242,7 @@ function getY(centroY, a, radio) {
   return centroY + sin(a) * radio;
 }
 
-function IdentificarArchivo(event) {
+function SubirArchivo(event) {
   let file = event.target.files[0];
   if (file && file.type.startsWith("image/")) {
     loadImage(URL.createObjectURL(file), (img) => {
