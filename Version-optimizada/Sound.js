@@ -24,12 +24,12 @@
 //     }, floor(1000 / (i + 1))); //El i-ésimo oscilador sonará cada 1/(i+1) segundos.
 //   }
 // }
-function CreateMetronome(iteraciones) {
+function CreateMetronome(iteraciones = 1) {
   CreateOscillators(iteraciones);
   CreateIntervals(iteraciones);
 }
 let oscillators = [];
-function CreateOscillators(iteraciones) {
+function CreateOscillators(iteraciones = 1) {
   ClearOscillators();
 
   for (let index = 0; index < iteraciones; index++) {
@@ -39,7 +39,7 @@ function CreateOscillators(iteraciones) {
     osc.amp(0.5 * 1 / (index + 1));
     oscillators.push([osc, false]);
   }
-  // console.log(oscillators);
+  // console.log("Osciladores creados");
 }
 function ClearOscillators() {
   if (oscillators.length > 0) {
@@ -48,14 +48,16 @@ function ClearOscillators() {
     }
     oscillators = [];
   }
+  // console.log("Lista de osciladores limpia");
 }
 let intervals = [];
-function CreateIntervals(iteraciones) {
+function CreateIntervals(iteraciones = 1) {
   ClearIntervals();
   for (let index = 0; index < iteraciones; index++) {
     let interval = setInterval(() => PlayInterval(index), floor(1000 / (index + 1)));
     intervals.push(interval);
   }
+  // console.log("Intervalos creados");
 }
 function PlayInterval(index) {
   if (oscillators[index][1]) {
@@ -74,4 +76,5 @@ function ClearIntervals() {
     }
     intervals = [];
   }
+  // console.log("Lista de intervalos limpia");
 }

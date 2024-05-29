@@ -10,7 +10,6 @@ let HEIGHTSHAPE;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  //IMAGEN.resize(50,0);
 
   shape = createGraphics(width, height);
   WIDTHSHAPE = shape.width / 2;
@@ -32,6 +31,8 @@ function setup() {
   let colorPickerFractal = document.getElementById("colorFractal");
   let colorPickerContorno = document.getElementById("colorContornoFractal");
   let boton = document.getElementById("boton")
+
+  let inputImagen = select("#imagen");
 
   sliderProporcion.addEventListener("input", function () {
     PROPORCION = parseFloat(sliderProporcion.value);
@@ -62,8 +63,8 @@ function setup() {
     COLOR_CONTORNO_FRACTAL = this.value;
     Dibujar();
   })
-
   boton.addEventListener("click", function () { saveCanvas("Fractal") })
+  inputImagen.elt.addEventListener("change", SubirArchivo);
 }
 
 /*  Dibujar:
@@ -78,6 +79,7 @@ function Dibujar() {
   DibujarFractal(0, 0, createVector(0, 0), ZOOM, NUMERO_VERTICES, ITERACIONES);
   pop();
 }
+
 /*  DibujarFractal:
     Dibuja un fractal de poligonos con parametros:
     -->   centro: (centroX, centroY), la posicion donde se empieza a dibujar el fractal
@@ -90,9 +92,16 @@ function DibujarFractal(centroX, centroY, vertice, radio, numVertices, iteracion
   let radioReducido = radio * PROPORCION
   //  Para iteraciones positivas distintas de cero.
   if (iteraciones > 0) {
-    // DibujarImagen(centroX, centroY, radio);
-    // DibujarMask(centroX, centroY, radio, numVertices, iteraciones - 1);
-    DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones - 1);
+    if (IMAGEN) {
+      console.log("Hay imagen");
+      DibujarMask(centroX, centroY, radio, numVertices, iteraciones - 1);
+      // DibujarImagen(centroX, centroY, radio);
+    }
+    else {
+      console.log("No hay imagen");
+      DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones - 1);
+
+    }
 
     let listaVertices = InformacionPoligono(centroX, centroY, vertice, radio, numVertices, iteraciones);
 
@@ -184,25 +193,25 @@ function DibujarMask(centroX, centroY, radio, numVertices, iteraciones) {
   }
   shape.endShape(CLOSE);
 
-  imageMode(CENTER);
-  image(shape, centroX, centroY)
+  let imageMasked = DibujarImagen(centroX, centroY, radio, radio);
+  imageMode(CENTER)
 
-  // let imageMasked = createImage(WIDTHMASK, HEIGHTMASK);
-  // imageMasked.copy(IMAGEN, 0, 0, IMAGEN.width, IMAGEN.height, 0, 0, WIDTHIMAGE, HEIGHTIMAGE);
+  // image(shape, centroX, centroY)
+  // image(imageMasked, centroX, centroY)
 
-  // imageMode(CENTER);
-  // imageMasked.mask(shape);
-  // image(imageMasked, centroX, centroY);
+  imageMasked.mask(shape);
+  image(imageMasked, centroX, centroY)
 }
 
-function DibujarImagen(centroX, centroY, radio) {
-  const WIDTH = 2 * radio;
-  const HEIGHT = 2 * radio;
+function DibujarImagen(centroX, centroY, widthX, heightY) {
+  const WIDTH = 2 * widthX;
+  const HEIGHT = 2 * heightY;
   let imageScaled = createImage(WIDTH, HEIGHT);
   imageScaled.copy(IMAGEN, 0, 0, IMAGEN.width, IMAGEN.height, 0, 0, WIDTH, HEIGHT);
 
-  imageMode(CENTER);
-  image(imageScaled, centroX, centroY);
+  return imageScaled;
+  // imageMode(CENTER);
+  // image(imageScaled, centroX, centroY);
 }
 
 function CreateVertex(centroX, centroY, radio, numVertices, iteraciones) {
@@ -220,10 +229,10 @@ function CreateVertex(centroX, centroY, radio, numVertices, iteraciones) {
 function setAnglePair(numVertices, iteraciones) {
   return numVertices % 2 == 1 && iteraciones % 2 == 0 ? PI : 0;
 }
+
 function setAngleOdd(_numVertices, _iteraciones) {
   return _numVertices % 2 == 1 && _iteraciones % 2 == 1 ? PI : 0;
 }
-
 
 function getX(centroX, a, radio) {
   return centroX + cos(a) * radio;
@@ -231,4 +240,17 @@ function getX(centroX, a, radio) {
 
 function getY(centroY, a, radio) {
   return centroY + sin(a) * radio;
+}
+
+function SubirArchivo(event) {
+  let file = event.target.files[0];
+  if (file && file.type.startsWith("image/")) {
+    loadImage(URL.createObjectURL(file), (img) => {
+      IMAGEN = img;
+      console.log("Imagen cargada correctamente");
+      Dibujar();
+    })
+  } else {
+    console.log("El archivo no es una imagen");
+  }
 }
