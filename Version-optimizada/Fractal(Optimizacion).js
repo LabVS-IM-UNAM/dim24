@@ -21,3 +21,4 @@ function Dibujar() {
   if (IMAGEN) DibujarImagen(poligono, ZOOM);
   else DibujarPoligono(poligono);
 }
+

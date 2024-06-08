@@ -1,5 +1,7 @@
-const VectorX = (centro, angulo, radio) => centro + cos(angulo) * radio;
-const VectorY = (centro, angulo, radio) => centro + sin(angulo) * radio;
+const VectorX = (centroX, angulo, radio) => centroX + cos(angulo) * radio;
+const VectorY = (centroY, angulo, radio) => centroY + sin(angulo) * radio;
+
+
 
 function CrearPoligono(numeroVertices = 3, radio = 50, centro = { x: width / 2, y: height / 2 }) {
   let anguloCentral = TWO_PI / numeroVertices;
@@ -10,3 +12,5 @@ function CrearPoligono(numeroVertices = 3, radio = 50, centro = { x: width / 2, 
   }
   return vertices;
 }
+
+
