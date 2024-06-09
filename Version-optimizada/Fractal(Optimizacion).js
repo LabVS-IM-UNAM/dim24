@@ -1,7 +1,7 @@
-let NUMERO_VERTICES = 4;
+let NUMERO_VERTICES = 3;
 let PROPORCION = 0.5;
 let ZOOM = 75;
-let ITERACIONES = 3;
+let ITERACIONES = 5;
 
 function preload() {
   // CreateMetronome(1);

@@ -32,10 +32,16 @@ function CrearOrbitaFractal(iteraciones, radio = 50, proporcion = 0.5, numeroVer
   let orbitas = [];
   orbitas.push([{ x: width / 2, y: height / 2 }]);  // Centro inicial
 
-  for (let i = 0; i < iteraciones; i++) {
+  for (let i = 0; i < iteraciones - 1; i++) {
     let orbita = [];
     for (let j = 0; j < orbitas[i].length; j++) {
-      orbita = orbita.concat(CalcularSiguienteOrbita(orbitas[i][j], i, radio, proporcion, numeroVertices))
+      let nuevosCentros = CalcularSiguienteOrbita(orbitas[i][j], i, radio, proporcion, numeroVertices);
+
+      if (i > 0) {
+        nuevosCentros = LimpiarDespuesDeSiguienteOrbita(nuevosCentros, orbitas[0][0], i, radio, proporcion);
+      }
+
+      orbita = orbita.concat(nuevosCentros)
     }
     orbitas.push(orbita);
   }
