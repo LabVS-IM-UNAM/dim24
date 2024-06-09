@@ -1,18 +1,19 @@
-let NUMERO_VERTICES;
-let PROPORCION;
-let ZOOM;
-let ITERACIONES;
+let NUMERO_VERTICES = 4;
+let PROPORCION = 0.5;
+let ZOOM = 75;
+let ITERACIONES = 3;
 
 function preload() {
-  CreateMetronome(1);
+  // CreateMetronome(1);
 }
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
   Input();
-  InicializarColores();
-  Dibujar();
+  // InicializarColores();
+  // Dibujar();
 
+  TestDibujarOrbita(ITERACIONES, ZOOM, PROPORCION, NUMERO_VERTICES);
 }
 
 function Dibujar() {
