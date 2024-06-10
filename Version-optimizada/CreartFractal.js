@@ -1,45 +1,30 @@
-const Distancia = (vectorA, vectorB) => Math.sqrt((vectorB.x - vectorA.x) ** 2 + (vectorB.y - vectorA.y) ** 2);
 /*
 CalcularCentros:
   A partir de un centro calcula la posicion de los centros para la siguiente iteracion con un radio, una proporcion y un numero de vertices fijos.
 */
-function CalcularSiguienteOrbita(centro = { x: width / 2, y: height / 2 }, iteracionActual = 1, radio = 50, proporcion = 0.5, numeroVertices = 3) {
-  const DISTANCIA_CENTROS = radio * ((proporcion ** iteracionActual) + (proporcion ** (iteracionActual + 1))); // Distancia del centro de la iteracion i con el centro de la iteracion i+1
+function CalcularSiguienteOrbita(punto, iteracionActual = 1, radio = 50, proporcion = 0.5, numeroVertices = 3) {
+  const DISTANCIA_CENTROS = radio * ((proporcion ** iteracionActual) * (proporcion + 1)); // Distancia del centro de la iteracion i con el centro de la iteracion i+1
   const ANGULO = TWO_PI / numeroVertices;
 
   let centros = []; //  Lista de centros
 
   for (let j = 0; j < numeroVertices; j++) {
-    let siguienteCentro = {
-      x: VectorX(centro.x, j * ANGULO, DISTANCIA_CENTROS),
-      y: VectorY(centro.y, j * ANGULO, DISTANCIA_CENTROS)
-    };
+    let siguienteCentro = new Punto(punto, j * ANGULO, DISTANCIA_CENTROS);
     centros.push(siguienteCentro);
   }
   return centros;
-}
-/*
-LimpiarDespuesDeSiguientesCentros:
-  Se regresa un array de centros tales que su distancia con un centro inicial es menor a una distancia determinada por la iteracion actual, el radio y la proporcion (DISTANCIA_CENTROS)
-*/
-function LimpiarDespuesDeSiguienteOrbita(centrosDespuesDeSiguienteIteracion = [], centroInicial = { x: width / 2, y: height / 2 }, iteracionActual = 1, radio = 50, proporcion = 0.5) {
-  const DISTANCIA_CENTROS = radio * ((proporcion ** iteracionActual) + (proporcion ** (iteracionActual + 1)));
-  return centrosDespuesDeSiguienteIteracion.filter(element => Distancia(centroInicial, element) > DISTANCIA_CENTROS);
 }
 
 
 function CrearOrbitaFractal(iteraciones, radio = 50, proporcion = 0.5, numeroVertices = 3) {
   let orbitas = [];
-  orbitas.push([{ x: width / 2, y: height / 2 }]);  // Centro inicial
+  centroInicial = new Punto({ x: width / 2, y: height / 2 }, 0, 0);
+  orbitas.push([centroInicial]);  // Centro inicial
 
   for (let i = 0; i < iteraciones - 1; i++) {
     let orbita = [];
     for (let j = 0; j < orbitas[i].length; j++) {
       let nuevosCentros = CalcularSiguienteOrbita(orbitas[i][j], i, radio, proporcion, numeroVertices);
-
-      if (i > 0) {
-        nuevosCentros = LimpiarDespuesDeSiguienteOrbita(nuevosCentros, orbitas[0][0], i, radio, proporcion);
-      }
 
       orbita = orbita.concat(nuevosCentros)
     }
@@ -52,12 +37,40 @@ function CrearOrbitaFractal(iteraciones, radio = 50, proporcion = 0.5, numeroVer
 function TestDibujarOrbita(iteraciones, radio, proporcion, numeroVertices) {
   let orbitas = CrearOrbitaFractal(iteraciones, radio, proporcion, numeroVertices);
 
+  push()
   stroke(0);
   strokeWeight(5);
 
   for (let i = 0; i < orbitas.length; i++) {
     for (let j = 0; j < orbitas[i].length; j++) {
-      point(orbitas[i][j].x, orbitas[i][j].y);
+      console.log(orbitas[i][j].centroX, orbitas[i][j].centroY);
+      point(orbitas[i][j].centroX, orbitas[i][j].centroY);
     }
   }
+  pop();
+}
+
+function DibujarFractal(iteraciones, radio, proporcion, numeroVertices) {
+  let orbitas = CrearOrbitaFractal(iteraciones, radio, proporcion, numeroVertices);
+  let poligono;
+
+  push();
+
+  for (let i = 0; i < orbitas.length; i++) {
+    for (let j = 0; j < orbitas[i].length; j++) {
+      poligono = CrearPoligono(numeroVertices, radio * (proporcion ** (i)), { x: orbitas[i][j].centroX, y: orbitas[i][j].centroY })
+
+      if (IMAGEN) {
+        if (i < 3) {
+          DibujarImagen(poligono, radio * (proporcion ** (i)), { x: orbitas[i][j].centroX, y: orbitas[i][j].centroY });
+        } else {
+          DibujarPoligono(poligono, radio * (proporcion ** (i)), { x: orbitas[i][j].centroX, y: orbitas[i][j].centroY });
+        }
+      } else {
+        DibujarPoligono(poligono, radio * (proporcion ** (i)), { x: orbitas[i][j].centroX, y: orbitas[i][j].centroY });
+      }
+    }
+  }
+  pop();
+  console.log("Fractal dibujado");
 }
