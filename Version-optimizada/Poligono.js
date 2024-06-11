@@ -22,7 +22,7 @@ class Poligono {
 		let vertices = this.CrearPoligono(esPar);
 		beginShape();
 		for (const ver of vertices) {
-			let vertice = ver.Vertice;
+			let vertice = ver.vertice;
 			vertex(vertice.x, vertice.y)
 		}
 		endShape(CLOSE);
@@ -36,8 +36,8 @@ class Poligono {
 		shape.beginShape();
 		for (const ver of vertices) {
 			shape.vertex(
-				ver.Vertice.x - ver.CentroInicial.x + this.radio,
-				ver.Vertice.y - ver.CentroInicial.y + this.radio,
+				ver.vertice.x - ver.centroInicial.x + this.radio,
+				ver.vertice.y - ver.centroInicial.y + this.radio,
 			);
 		}
 		shape.endShape(CLOSE);
@@ -51,7 +51,7 @@ class Poligono {
 	}
 
 	DibujarPunto() {
-		let vertice = this.CrearPoligono(true)[0].CentroInicial;
+		let vertice = this.CrearPoligono(true)[0].centroInicial;
 		push();
 		stroke(0);
 		strokeWeight(5);

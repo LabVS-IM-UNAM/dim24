@@ -29,7 +29,7 @@ function Input() {
     clear();
 
     Dibujar();
-    CreateMetronome(ITERACIONES);
+    // CreateMetronome(ITERACIONES);
   })
   sliderNumeroVertices.addEventListener("input", function () {
     NUMERO_VERTICES = parseInt(sliderNumeroVertices.value);
