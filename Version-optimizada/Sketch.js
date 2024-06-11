@@ -1,7 +1,7 @@
-let NUMERO_VERTICES = 3;
+let NUMERO_VERTICES = 4;
 let PROPORCION = 0.5;
 let ZOOM = 75;
-let ITERACIONES = 3;
+let ITERACIONES = 4;
 
 let marco
 
@@ -33,5 +33,5 @@ function draw() {
   clear();
   textSize(10)
   text(fps.toFixed(2), 50, 50);
-  // Dibujar();
+  Dibujar();
 }
