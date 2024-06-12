@@ -6,8 +6,6 @@ function InicializarColores() {
 	COLOR_FONDO = color("#ffffff");
 	COLOR_FRACTAL = color("#000000");
 	COLOR_BORDE = color("#000000");
-
-	AsignarColores();
 }
 function AsignarColores() {
 	background(COLOR_FONDO);

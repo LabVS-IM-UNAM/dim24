@@ -57,18 +57,3 @@ function CrearOrbitas(iteraciones, radio = 50, proporcion = 0.5, numeroVertices 
     return orbitas;
 }
 
-function T_DibujarOrbitas(iteraciones, radio, proporcion, numeroVertices) {
-    let orbitas = CrearOrbitas(iteraciones, radio, proporcion, numeroVertices);
-
-    push()
-
-    stroke(0)
-    strokeWeight(2);
-
-    for (let i = 0; i < orbitas.length; i++) {
-        for (let j = 0; j < orbitas[i].length; j++) {
-            point(orbitas[i][j].vertice.x, orbitas[i][j].vertice.y);
-        }
-    }
-    pop()
-}

@@ -53,8 +53,6 @@ class Poligono {
 	DibujarPunto() {
 		let vertice = this.CrearPoligono(true)[0].centroInicial;
 		push();
-		stroke(0);
-		strokeWeight(5);
 		point(vertice.x, vertice.y);
 		pop();
 	}

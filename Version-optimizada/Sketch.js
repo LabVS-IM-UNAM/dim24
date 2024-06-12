@@ -1,7 +1,7 @@
-let NUMERO_VERTICES = 4;
+let NUMERO_VERTICES = 3;
 let PROPORCION = 0.5;
 let ZOOM = 75;
-let ITERACIONES = 4;
+let ITERACIONES = 2;
 
 let marco
 
@@ -10,28 +10,25 @@ function preload() {
 }
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  marco = createGraphics(windowWidth / 4, windowHeight / 4)
-
-
+  
   Input();
-  // InicializarColores();
+  InicializarColores();
   Dibujar();
+  }
+  
+  function Dibujar() {
+  AsignarColores() // Si se quiere testear comentar esta linea
+  DibujarFractal(ITERACIONES, ZOOM, PROPORCION, NUMERO_VERTICES);
 }
 
-function Dibujar() {
-  // let poligono = new Poligono({ x: width / 2, y: height / 2 }, ZOOM, NUMERO_VERTICES);
 
-  // // if (IMAGEN) poligono.DibujarImagen(true);
-  // // else poligono.DibujarPoligono(true);
-  T_DibujarOrbitas(ITERACIONES, ZOOM, PROPORCION, NUMERO_VERTICES);
-}
+//  Test
+// function draw() {
 
-function draw() {
+//   let fps = frameRate();
 
-  let fps = frameRate();
-
-  clear();
-  textSize(10)
-  text(fps.toFixed(2), 50, 50);
-  Dibujar();
-}
+//   clear();
+//   textSize(10)
+//   text(fps.toFixed(2), 50, 50);
+//   Dibujar();
+// }
