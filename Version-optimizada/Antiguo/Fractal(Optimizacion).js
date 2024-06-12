@@ -4,7 +4,7 @@ let ZOOM;
 let ITERACIONES;
 
 function preload() {
-  CreateMetronome(1);
+  // CreateMetronome(1);
 }
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -20,4 +20,11 @@ function Dibujar() {
 
   if (IMAGEN) DibujarImagen(poligono, ZOOM);
   else DibujarPoligono(poligono);
+}
+function draw() {
+
+  push()
+  let fps = frameRate();
+  text(fps, 50, 50);
+  pop()
 }
