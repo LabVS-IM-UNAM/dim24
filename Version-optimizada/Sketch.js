@@ -10,15 +10,15 @@ function preload() {
 }
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  
+
   Input();
   InicializarColores();
   Dibujar();
-  }
-  
-  function Dibujar() {
+}
+
+function Dibujar() {
   AsignarColores() // Si se quiere testear comentar esta linea
-  DibujarFractal(ITERACIONES, ZOOM, PROPORCION, NUMERO_VERTICES);
+  DibujarFractal(ITERACIONES, ZOOM / PROPORCION, PROPORCION, NUMERO_VERTICES);
 }
 
 
