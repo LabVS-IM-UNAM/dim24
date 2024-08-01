@@ -1,3 +1,4 @@
+//  Se reciben los cambios de botones y sliders para realizar una accion en especifico mediante eventos.
 function Input() {
   let sliderNumeroVertices = document.getElementById("numeroVertices");
   let sliderProporcion = document.getElementById("proporcion");
@@ -10,7 +11,6 @@ function Input() {
 
   let boton = document.getElementById("boton")
   let inputImagen = select("#imagen");
-
 
   sliderProporcion.addEventListener("input", function () {
     PROPORCION = parseFloat(sliderProporcion.value);

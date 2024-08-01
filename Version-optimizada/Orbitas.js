@@ -1,6 +1,7 @@
 const distancia = (u, v) => Math.sqrt((u.x - v.x) * (u.x - v.x) + (u.y - v.y) * (u.y - v.y));
 const EPSILON = 0.01;
 
+//  Se calcula la siguiente orbita dado un centro, una iteracion, un radio, una proporcion y la cantidad de vertices del poligono
 function CalcularSiguienteOrbita
     (
         puntoInicial = new Punto({ x: width / 2, y: height / 2 }, 0, 0),
@@ -23,15 +24,26 @@ function CalcularSiguienteOrbita
 
         orbita.push(siguientePunto);
 
-        //Puntos pegados a su abuelo son eliminados
-        if (iteracionActual > 1 && distancia(siguientePunto.puntoInicial.puntoInicial.vertice, siguientePunto.vertice) < distancia(siguientePunto.puntoInicial.puntoInicial.vertice, siguientePunto.puntoInicial.vertice)) {
+        // Puntos dentro del radio del abuelo son descartados
+        if (iteracionActual > 1 && distancia(siguientePunto.vertice, siguientePunto.puntoInicial.puntoInicial.vertice) < radio * (proporcion ** (iteracionActual - 1))) {
+            // Debug_Orbitas(siguientePunto); //  Intenta este funcion con solo la condición iteracionActual > 1
             orbita.pop();
-            // console.log("Se elimino un punto innecesario");
         }
     }
     return orbita;
 }
 
+//  Nos muestra una linea entre el punto de la itereacion + 2 y el punto de la iteracion; asi podemos ver si ese punto es el que queremos dividir
+function Debug_Orbitas(siguientePunto) {
+    push();
+    strokeWeight(3);
+    stroke("red");
+    point(siguientePunto.vertice.x, siguientePunto.vertice.y);
+    line(siguientePunto.vertice.x, siguientePunto.vertice.y, siguientePunto.puntoInicial.puntoInicial.vertice.x, siguientePunto.puntoInicial.puntoInicial.vertice.y);
+    pop();
+}
+
+//  Se construye la orbita del fractal
 function CrearOrbitas(iteraciones, radio = 50, proporcion = 0.5, numeroVertices = 3) {
     let orbitas = [];
 
@@ -51,7 +63,6 @@ function CrearOrbitas(iteraciones, radio = 50, proporcion = 0.5, numeroVertices 
             orbitas.push(orbita);
             // console.log("Se agrego orbita " + (i + 1) + " con: " + orbita.length + " elementos");
         }
-
     }
     // console.log("\n\nSE CREARON: " + orbitas.length + " ORBITAS");
     return orbitas;
