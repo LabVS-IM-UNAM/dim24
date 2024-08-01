@@ -1,6 +1,7 @@
 const distancia = (u, v) => Math.sqrt((u.x - v.x) * (u.x - v.x) + (u.y - v.y) * (u.y - v.y));
 const EPSILON = 0.01;
 
+//  Se calcula la siguiente orbita dado un centro, una iteracion, un radio, una proporcion y la cantidad de vertices del poligono
 function CalcularSiguienteOrbita
     (
         puntoInicial = new Punto({ x: width / 2, y: height / 2 }, 0, 0),
@@ -25,7 +26,7 @@ function CalcularSiguienteOrbita
 
         // Puntos dentro del radio del abuelo son descartados
         if (iteracionActual > 1 && distancia(siguientePunto.vertice, siguientePunto.puntoInicial.puntoInicial.vertice) < radio * (proporcion ** (iteracionActual - 1))) {
-            // DebugOrbitas(siguientePunto); //  Intenta este funcion con solo la condición iteracionActual > 1
+            // Debug_Orbitas(siguientePunto); //  Intenta este funcion con solo la condición iteracionActual > 1
             orbita.pop();
         }
     }
@@ -33,7 +34,7 @@ function CalcularSiguienteOrbita
 }
 
 //  Nos muestra una linea entre el punto de la itereacion + 2 y el punto de la iteracion; asi podemos ver si ese punto es el que queremos dividir
-function DebugOrbitas(siguientePunto) {
+function Debug_Orbitas(siguientePunto) {
     push();
     strokeWeight(3);
     stroke("red");
@@ -42,6 +43,7 @@ function DebugOrbitas(siguientePunto) {
     pop();
 }
 
+//  Se construye la orbita del fractal
 function CrearOrbitas(iteraciones, radio = 50, proporcion = 0.5, numeroVertices = 3) {
     let orbitas = [];
 
@@ -61,7 +63,6 @@ function CrearOrbitas(iteraciones, radio = 50, proporcion = 0.5, numeroVertices 
             orbitas.push(orbita);
             // console.log("Se agrego orbita " + (i + 1) + " con: " + orbita.length + " elementos");
         }
-
     }
     // console.log("\n\nSE CREARON: " + orbitas.length + " ORBITAS");
     return orbitas;

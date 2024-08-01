@@ -7,7 +7,7 @@ class Poligono {
 		this.WIDTH = 2 * radio;
 		this.HEIGHT = 2 * radio;
 	}
-
+	//	Creacion de un poligono dependiedo si la cantidad de numeros de vertices es Par o no (necesaria para poligonos impares)
 	CrearPoligono(esPar) {
 		const ANGULO_CENTRAL = TWO_PI / this.numeroVertices;
 		let vertices = [];
@@ -17,7 +17,8 @@ class Poligono {
 		}
 		return vertices;
 	}
-
+	
+	//	Se dibuja el poligono creado
 	DibujarPoligono(esPar) {
 		let vertices = this.CrearPoligono(esPar);
 		beginShape();
@@ -28,6 +29,7 @@ class Poligono {
 		endShape(CLOSE);
 	}
 
+	//	Se dibuja una mascara para colocar una imagen; siendo la frontera de la mascara el poligono
 	DibujarImagen(esPar) {
 		let vertices = this.CrearPoligono(esPar);
 
@@ -50,11 +52,13 @@ class Poligono {
 		image(imageScaled, this.centro.x, this.centro.y);
 	}
 
-	DibujarPunto() {
+	//	Se dibuja el centro del poligono
+	Debug_DibujarCentro() {
 		let vertice = this.CrearPoligono(true)[0].centroInicial;
 		push();
+		strokeWeight(2);
+		stroke("blue");
 		point(vertice.x, vertice.y);
 		pop();
 	}
-
 }
