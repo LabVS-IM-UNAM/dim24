@@ -2,9 +2,8 @@ function T_DibujarOrbitas(iteraciones, radio, proporcion, numeroVertices) {
     let orbitas = CrearOrbitas(iteraciones, radio, proporcion, numeroVertices);
 
     push();
-
-    stroke(255);
     strokeWeight(5);
+    stroke("red");
 
     for (let i = 0; i < orbitas.length; i++) {
         for (let j = 0; j < orbitas[i].length; j++) {

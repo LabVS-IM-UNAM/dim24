@@ -19,6 +19,7 @@ function setup() {
 function Dibujar() {
   AsignarColores() // Si se quiere testear comentar esta linea
   DibujarFractal(ITERACIONES, ZOOM / PROPORCION, PROPORCION, NUMERO_VERTICES);
+  // T_DibujarOrbitas(ITERACIONES, ZOOM / PROPORCION, PROPORCION, NUMERO_VERTICES);
 }
 
 

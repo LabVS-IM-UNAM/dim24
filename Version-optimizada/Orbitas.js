@@ -23,13 +23,23 @@ function CalcularSiguienteOrbita
 
         orbita.push(siguientePunto);
 
-        //Puntos pegados a su abuelo son eliminados
-        if (iteracionActual > 1 && distancia(siguientePunto.puntoInicial.puntoInicial.vertice, siguientePunto.vertice) < distancia(siguientePunto.puntoInicial.puntoInicial.vertice, siguientePunto.puntoInicial.vertice)) {
+        // Puntos dentro del radio del abuelo son descartados
+        if (iteracionActual > 1 && distancia(siguientePunto.vertice, siguientePunto.puntoInicial.puntoInicial.vertice) < radio * (proporcion ** (iteracionActual - 1))) {
+            // DebugOrbitas(siguientePunto); //  Intenta este funcion con solo la condición iteracionActual > 1
             orbita.pop();
-            // console.log("Se elimino un punto innecesario");
         }
     }
     return orbita;
+}
+
+//  Nos muestra una linea entre el punto de la itereacion + 2 y el punto de la iteracion; asi podemos ver si ese punto es el que queremos dividir
+function DebugOrbitas(siguientePunto) {
+    push();
+    strokeWeight(3);
+    stroke("red");
+    point(siguientePunto.vertice.x, siguientePunto.vertice.y);
+    line(siguientePunto.vertice.x, siguientePunto.vertice.y, siguientePunto.puntoInicial.puntoInicial.vertice.x, siguientePunto.puntoInicial.puntoInicial.vertice.y);
+    pop();
 }
 
 function CrearOrbitas(iteraciones, radio = 50, proporcion = 0.5, numeroVertices = 3) {
