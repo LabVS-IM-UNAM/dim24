@@ -33,6 +33,7 @@ function Input() {
   })
   sliderNumeroVertices.addEventListener("input", function () {
     NUMERO_VERTICES = parseInt(sliderNumeroVertices.value);
+    ANGULO = (2 * Math.PI) / NUMERO_VERTICES;
     clear();
 
     Dibujar();

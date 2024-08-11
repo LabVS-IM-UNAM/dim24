@@ -1,5 +1,6 @@
-const distancia = (u, v) => Math.sqrt((u.x - v.x) * (u.x - v.x) + (u.y - v.y) * (u.y - v.y));
+const distancia = (u, v) => (u.x - v.x) * (u.x - v.x) + (u.y - v.y) * (u.y - v.y);
 const EPSILON = 0.01;
+
 
 //  Se calcula la siguiente orbita dado un centro, una iteracion, un radio, una proporcion y la cantidad de vertices del poligono
 function CalcularSiguienteOrbita
@@ -8,14 +9,12 @@ function CalcularSiguienteOrbita
         iteracionActual = 1,
         radio = 50,
         proporcion = 0.5,
-        numeroVertices = 3
     ) {
     const DISTANCIA_CENTROS = radio * ((proporcion ** iteracionActual) * (proporcion + 1)); // Distancia del centro de la iteracion i con el centro de la iteracion i+1
-    const ANGULO = TWO_PI / numeroVertices;
 
     let orbita = [];
 
-    for (let j = 0; j < numeroVertices; j++) {
+    for (let j = 0; j < NUMERO_VERTICES; j++) {
         let siguientePunto;
         let angulo = iteracionActual % 2 == 0 ? ANGULO * j : (ANGULO * j) + PI;
 
@@ -25,7 +24,8 @@ function CalcularSiguienteOrbita
         orbita.push(siguientePunto);
 
         // Puntos dentro del radio del abuelo son descartados
-        if (iteracionActual > 1 && distancia(siguientePunto.vertice, siguientePunto.puntoInicial.puntoInicial.vertice) < radio * (proporcion ** (iteracionActual - 1))) {
+        // Antes se tomaba d(x,y) < r * p**(i-1) pero con la distancia euclidiana; lo que se hizo fue elevar ambos lados al cuadrado y como ambos son positivos se quedo asi.
+        if (iteracionActual > 1 && distancia(siguientePunto.vertice, siguientePunto.puntoInicial.puntoInicial.vertice) < (radio * radio) * (proporcion ** (2 * (iteracionActual - 1)))) {
             // Debug_Orbitas(siguientePunto); //  Intenta este funcion con solo la condición iteracionActual > 1
             orbita.pop();
         }
@@ -44,7 +44,7 @@ function Debug_Orbitas(siguientePunto) {
 }
 
 //  Se construye la orbita del fractal
-function CrearOrbitas(iteraciones, radio = 50, proporcion = 0.5, numeroVertices = 3) {
+function CrearOrbitas(iteraciones, radio = 50, proporcion = 0.5) {
     let orbitas = [];
 
 
@@ -56,7 +56,7 @@ function CrearOrbitas(iteraciones, radio = 50, proporcion = 0.5, numeroVertices 
         } else {
             let orbita = [];
             for (let j = 0; j < orbitas[i - 1].length; j++) {
-                let nuevosPuntos = CalcularSiguienteOrbita(orbitas[i - 1][j], i, radio, proporcion, numeroVertices)
+                let nuevosPuntos = CalcularSiguienteOrbita(orbitas[i - 1][j], i, radio, proporcion)
 
                 orbita = orbita.concat(nuevosPuntos);
             }

@@ -1,6 +1,9 @@
+let orbitas;
+let poligono;
+let esPar;
 //  Funcion de prueba que dibuja las orbitas del fractal
-function Debug_DibujarOrbitas(iteraciones, radio, proporcion, numeroVertices) {
-    let orbitas = CrearOrbitas(iteraciones, radio, proporcion, numeroVertices);
+function Debug_DibujarOrbitas(iteraciones, radio, proporcion) {
+    orbitas = CrearOrbitas(iteraciones, radio, proporcion);
     push();
     strokeWeight(5);
     stroke("green");
@@ -14,9 +17,7 @@ function Debug_DibujarOrbitas(iteraciones, radio, proporcion, numeroVertices) {
 
 //  Si se detecta que hay una imagen, entonces se dibuja en cada orbita un poligono ya sea enmascarando la imagen o con un color solido. 
 function DibujarFractal(iteraciones, radio, proporcion, numeroVertices) {
-    let orbitas = CrearOrbitas(iteraciones, radio, proporcion, numeroVertices);
-    let poligono;
-    let esPar;
+    orbitas = CrearOrbitas(iteraciones, radio, proporcion);
     push();
     for (let i = 0; i < orbitas.length; i++) {
         for (let j = 0; j < orbitas[i].length; j++) {

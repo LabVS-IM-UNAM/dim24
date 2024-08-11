@@ -1,11 +1,14 @@
-let shape;
 class Poligono {
 	constructor(centro, radio, numeroVertices) {
 		this.centro = centro;
 		this.radio = radio;
 		this.numeroVertices = numeroVertices;
-		this.WIDTH = 2 * radio;
-		this.HEIGHT = 2 * radio;
+
+		// Crear y reutilizar el gráfico y la imagen escalada
+		this.maskShape = createGraphics(2 * this.radio, 2 * this.radio);
+		this.imageScaled = createImage(2 * this.radio, 2 * this.radio);
+		this.maskNeedsUpdate = true; // Bandera para saber si la máscara necesita actualización
+
 	}
 	//	Creacion de un poligono dependiedo si la cantidad de numeros de vertices es Par o no (necesaria para poligonos impares)
 	CrearPoligono(esPar) {
@@ -17,7 +20,7 @@ class Poligono {
 		}
 		return vertices;
 	}
-	
+
 	//	Se dibuja el poligono creado
 	DibujarPoligono(esPar) {
 		let vertices = this.CrearPoligono(esPar);
@@ -29,27 +32,42 @@ class Poligono {
 		endShape(CLOSE);
 	}
 
-	//	Se dibuja una mascara para colocar una imagen; siendo la frontera de la mascara el poligono
-	DibujarImagen(esPar) {
+	ActualizarMascara(esPar) {
 		let vertices = this.CrearPoligono(esPar);
 
-		shape = createGraphics(this.WIDTH, this.HEIGHT);
-
-		shape.beginShape();
-		for (const ver of vertices) {
-			shape.vertex(
-				ver.vertice.x - ver.centroInicial.x + this.radio,
-				ver.vertice.y - ver.centroInicial.y + this.radio,
-			);
+		// Solo actualiza la máscara si es necesario
+		if (this.maskNeedsUpdate) {
+			this.maskShape.clear();
+			this.maskShape.beginShape();
+			for (const ver of vertices) {
+				this.maskShape.vertex(
+					ver.vertice.x - ver.centroInicial.x + this.radio,
+					ver.vertice.y - ver.centroInicial.y + this.radio
+				);
+			}
+			this.maskShape.endShape(CLOSE);
+			this.maskNeedsUpdate = false; // Máscara actualizada
 		}
-		shape.endShape(CLOSE);
+	}
 
-		let imageScaled = createImage(this.WIDTH, this.HEIGHT);
-		imageScaled.copy(IMAGEN, 0, 0, IMAGEN.width, IMAGEN.height, 0, 0, this.WIDTH, this.HEIGHT);
-		imageScaled.mask(shape);
 
+
+	DibujarImagen(esPar) {
+		// Actualiza la máscara solo si es necesario
+		this.ActualizarMascara(esPar);
+
+		// Escalar la imagen base y aplicar la máscara
+		this.imageScaled.copy(IMAGEN, 0, 0, IMAGEN.width, IMAGEN.height, 0, 0, 2 * this.radio, 2 * this.radio);
+		this.imageScaled.mask(this.maskShape);
+
+		// Dibujar la imagen enmascarada en la posición deseada
 		imageMode(CENTER);
-		image(imageScaled, this.centro.x, this.centro.y);
+		image(this.imageScaled, this.centro.x, this.centro.y);
+	}
+
+	// Método para forzar la actualización de la máscara en caso de cambios externos
+	ForzarActualizacionMascara() {
+		this.maskNeedsUpdate = true;
 	}
 
 	//	Se dibuja el centro del poligono
