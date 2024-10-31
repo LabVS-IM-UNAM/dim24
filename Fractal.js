@@ -3,20 +3,24 @@ let PROPORCION = 0.5;
 let ZOOM = 100;
 let ITERACIONES = 5;
 let NUMERO_VERTICES = 4;
-let COLOR_BACKGROUND;
-let COLOR_FRACTAL;
-let COLOR_CONTORNO_FRACTAL;
-let IMAGEN;
+let COLOR_BACKGROUND, COLOR_FRACTAL, COLOR_CONTORNO_FRACTAL, IMAGEN;
+let shape;
+let WIDTHSHAPE;
+let HEIGHTSHAPE;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  //IMAGEN.resize(50,0);
+
+  shape = createGraphics(width, height);
+  WIDTHSHAPE = shape.width / 2;
+  HEIGHTSHAPE = shape.height / 2;
 
   COLOR_BACKGROUND = color("#ffffff");
   COLOR_FRACTAL = color("#000000");
   COLOR_CONTORNO_FRACTAL = color("#000000");
 
   Dibujar();
+  CreateMetronome(ITERACIONES);
 
 
   let sliderProporcion = document.getElementById("proporcion");
@@ -27,6 +31,8 @@ function setup() {
   let colorPickerFractal = document.getElementById("colorFractal");
   let colorPickerContorno = document.getElementById("colorContornoFractal");
   let boton = document.getElementById("boton")
+
+  let inputImagen = select("#imagen");
 
   sliderProporcion.addEventListener("input", function () {
     PROPORCION = parseFloat(sliderProporcion.value);
@@ -39,6 +45,7 @@ function setup() {
   sliderIteraciones.addEventListener("input", function () {
     ITERACIONES = parseInt(sliderIteraciones.value);
     Dibujar();
+    CreateMetronome(ITERACIONES);
   })
   sliderNumeroVertices.addEventListener("input", function () {
     NUMERO_VERTICES = parseInt(sliderNumeroVertices.value);
@@ -56,8 +63,8 @@ function setup() {
     COLOR_CONTORNO_FRACTAL = this.value;
     Dibujar();
   })
-  boton.addEventListener("click", function(){saveCanvas("Fractal")})
-
+  boton.addEventListener("click", function () { saveCanvas("Fractal") })
+  inputImagen.elt.addEventListener("change", SubirArchivo);
 }
 
 /*  Dibujar:
@@ -72,55 +79,59 @@ function Dibujar() {
   DibujarFractal(0, 0, createVector(0, 0), ZOOM, NUMERO_VERTICES, ITERACIONES);
   pop();
 }
+
 /*  DibujarFractal:
     Dibuja un fractal de poligonos con parametros:
     -->   centro: (centroX, centroY), la posicion donde se empieza a dibujar el fractal
     -->   radio: Distancia de cada vertice con el centro.
     -->   vertice: El vertice donde no se dibujara un poligono ni sus siguientes iteraciones.
     -->   numVertices: Es la cantidad de vertices que tiene el poligono.
-    -->   iteraciones: Son las veces que se realiza recursivamente el fractal.
+    -->   itdaranhaeraciones: Son las veces que se realiza recursivamente el fractal.
 */
 function DibujarFractal(centroX, centroY, vertice, radio, numVertices, iteraciones) {
   let radioReducido = radio * PROPORCION
   //  Para iteraciones positivas distintas de cero.
   if (iteraciones > 0) {
-    DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones - 1);
+    if (IMAGEN) {
+      console.log("Hay imagen");
+      DibujarMask(centroX, centroY, radio, numVertices, iteraciones - 1);
+      // DibujarImagen(centroX, centroY, radio);
+    }
+    else {
+      console.log("No hay imagen");
+      DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones - 1);
+
+    }
+
     let listaVertices = InformacionPoligono(centroX, centroY, vertice, radio, numVertices, iteraciones);
-    //  Para la siguiente iteracion
-    let nuevoCentroX, nuevoCentroY, nuevoVertice;
-    /*  
+
+    /*
       Para cada vertice del poligono anterior:
       -->   Asignamos ese vertice para no dibujar un poligono.
       -->   Buscamos un centro nuevo para dibujar nuestro poligono.
       -->   Llamamos esta función para realizar el proceso para cada vertice las iteraciones necesarias.
     */
+
+    let angleOdd = setAngleOdd(numVertices, iteraciones)
+
     for (let v = 0; v < listaVertices[0].length; v++) {
-      let X = listaVertices[0][v].x;
+      let X = (numVertices % 2 == 1 && iteraciones % 2 == 1) ? -listaVertices[0][v].x : listaVertices[0][v].x;
       let Y = listaVertices[0][v].y;
       let angle = listaVertices[1][v];
 
-      nuevoVertice = createVector(X, Y);
-
-      if (numVertices % 2 == 1) {
-        if (iteraciones % 2 == 1) {
-          nuevoCentroX = -X + cos(angle + PI) * radioReducido;
-          nuevoCentroY = Y + sin(angle) * radioReducido;
-        } else {
-          nuevoCentroX = X + cos(angle) * radioReducido
-          nuevoCentroY = Y + sin(angle) * radioReducido;
-        }
-      } else {
-        nuevoCentroX = X + cos(angle) * radioReducido;
-        nuevoCentroY = Y + sin(angle) * radioReducido;
-      }
-
-      DibujarFractal(nuevoCentroX, nuevoCentroY, nuevoVertice, radioReducido, numVertices, iteraciones - 1)
+      DibujarFractal(
+        getX(X, angle + angleOdd, radioReducido),
+        getY(Y, angle, radioReducido),
+        createVector(X, Y),
+        radioReducido,
+        numVertices,
+        iteraciones - 1)
     }
   }
 }
 
 /*  InformacionPoligono:
-    Almacena informacion relacionada a la posicion y angulo respecto al eje X de los vertices del poligono a 
+    Almacena informacion relacionada a la posicion y angulo respecto al eje X de los vertices del poligono a
     excepcion de 1.
     -->   centro: (centroX, centroY), la posicion donde se empieza a dibujar el poligono.
     -->   radio: Distancia de cada vertice con el centro.
@@ -128,63 +139,29 @@ function DibujarFractal(centroX, centroY, vertice, radio, numVertices, iteracion
     -->   numVertices: Es la cantidad de vertices que tiene el poligono.
     -->   iteraciones: La iteracion en la que se encuentra el poligono.
 */
-function InformacionPoligono(centroX, centroY, vertice, radio, numVertices, iteraciones) {
+function InformacionPoligono(centroX, centroY, vertice = createVector(0, 0), radio, numVertices, iteraciones) {
 
   const ANGULO = TWO_PI / numVertices;
   const EPSILON = 0.01;
 
   let vertices = [];
   let angulos = [];
-  let informacion = [];
 
-  let sx, sy;
-  /*
-    Buscamos la posicion de cada vertice del poligono a partir de su centro y su radio, guardamos su posicion
-    y su angulo con respecto al eje x en una lista.
-    Verificamos que la posicion que guardamos no sea la del parametro vertice, de serlo lo sacamos de la lista
-  */
+  centroX *= numVertices % 2 == 1 && iteraciones % 2 == 1 ? -1 : 1;
+
+  let vector
   for (let a = 0; a < TWO_PI; a += ANGULO) {
-    if (numVertices % 2 == 1) {
-      if (iteraciones % 2 == 1) {
-        sx = -centroX + cos(a) * radio;
-        sy = centroY + sin(a) * radio;
-      } else {
-        sx = centroX + cos(a) * radio;
-        sy = centroY + sin(a) * radio;
-      }
-    }
-    else {
-      sx = centroX + cos(a) * radio;
-      sy = centroY + sin(a) * radio;
-    }
-
-    let vector = createVector(sx, sy);
+    vector = createVector(getX(centroX, a, radio), getY(centroY, a, radio));
 
     vertices.push(vector);
     angulos.push(a);
 
-    /*
-      Verificar que el vertice del poligono no concuerde con uno dado, util para la siguiente iteración.
-      NOTA:
-        La verificacion cambia sutilmente dependiendo si el poligono es par o impar.
-    */
-    if (numVertices % 2 == 1) {
-      if (abs(vector.x + vertice.x) < EPSILON && abs(vector.y - vertice.y) < EPSILON) {
-        vertices.pop();
-        angulos.pop();
-      }
-    } else {
-      if (abs(vector.x - vertice.x) < EPSILON && abs(vector.y - vertice.y) < EPSILON) {
-        vertices.pop();
-        angulos.pop();
-      }
+    if ((numVertices % 2 == 1 && abs(vector.x + vertice.x) < EPSILON && abs(vector.y - vertice.y) < EPSILON) || (abs(vector.x - vertice.x) < EPSILON && abs(vector.y - vertice.y) < EPSILON)) {
+      vertices.pop();
+      angulos.pop();
     }
   }
-  //  Guardamos la informacion que queremos en una lista
-  informacion.push(vertices);
-  informacion.push(angulos);
-
-  return informacion;
+  return [vertices, angulos];
 }
 
 /*  DibujarPoligono:
@@ -195,29 +172,85 @@ function InformacionPoligono(centroX, centroY, vertice, radio, numVertices, iter
     -->   iteraciones: La iteracion en la que se encuentra el poligono.
 */
 function DibujarPoligono(centroX, centroY, radio, numVertices, iteraciones) {
-  //  Calculo del ángulo para rotar cada vertice de poligonos
-  const ANGULO = TWO_PI / numVertices;
-  //  Dibujo del poligono
-  beginShape();
-  //  Color
-  stroke(COLOR_CONTORNO_FRACTAL)
-  fill(COLOR_FRACTAL);
 
-  let sx, sy;
-  for (let a = 0; a < TWO_PI; a += ANGULO) {
-    if (numVertices % 2 == 1) {
-      if (iteraciones % 2 == 0) {
-        sx = centroX + cos(a + PI) * radio;
-        sy = centroY + sin(a) * radio;
-      } else {
-        sx = centroX + cos(a) * radio;
-        sy = centroY + sin(a) * radio;
-      }
-    } else {
-      sx = centroX + cos(a) * radio;
-      sy = centroY + sin(a) * radio;
-    }
-    vertex(sx, sy);
+  let listVertex = CreateVertex(centroX, centroY, radio, numVertices, iteraciones);
+
+  stroke(COLOR_CONTORNO_FRACTAL)
+  fill(COLOR_FRACTAL)
+  beginShape()
+  for (let i = 0; i < listVertex.length; i++) {
+    vertex(listVertex[i].x, listVertex[i].y);
   }
-  endShape(CLOSE);
+  endShape(CLOSE)
+}
+
+function DibujarMask(centroX, centroY, radio, numVertices, iteraciones) {
+  let listVertex = CreateVertex(WIDTHSHAPE, HEIGHTSHAPE, radio, numVertices, iteraciones);
+  shape.clear();
+  shape.beginShape();
+  for (let i = 0; i < listVertex.length; i++) {
+    shape.vertex(listVertex[i].x, listVertex[i].y);
+  }
+  shape.endShape(CLOSE);
+
+  let imageMasked = DibujarImagen(centroX, centroY, radio, radio);
+  imageMode(CENTER)
+
+  // image(shape, centroX, centroY)
+  // image(imageMasked, centroX, centroY)
+
+  imageMasked.mask(shape);
+  image(imageMasked, centroX, centroY)
+}
+
+function DibujarImagen(centroX, centroY, widthX, heightY) {
+  const WIDTH = 2 * widthX;
+  const HEIGHT = 2 * heightY;
+  let imageScaled = createImage(WIDTH, HEIGHT);
+  imageScaled.copy(IMAGEN, 0, 0, IMAGEN.width, IMAGEN.height, 0, 0, WIDTH, HEIGHT);
+
+  return imageScaled;
+  // imageMode(CENTER);
+  // image(imageScaled, centroX, centroY);
+}
+
+function CreateVertex(centroX, centroY, radio, numVertices, iteraciones) {
+  let listVertex = [];
+  const ANGULO = TWO_PI / numVertices;
+  let angle = setAnglePair(numVertices, iteraciones);
+
+  for (let a = 0; a < TWO_PI; a += ANGULO) {
+    let vertex = createVector(getX(centroX, a + angle, radio), getY(centroY, a + angle, radio));
+    listVertex.push(vertex);
+  }
+  return listVertex;
+}
+
+function setAnglePair(numVertices, iteraciones) {
+  return numVertices % 2 == 1 && iteraciones % 2 == 0 ? PI : 0;
+}
+
+function setAngleOdd(_numVertices, _iteraciones) {
+  return _numVertices % 2 == 1 && _iteraciones % 2 == 1 ? PI : 0;
+}
+
+function getX(centroX, a, radio) {
+  return centroX + cos(a) * radio;
+}
+
+function getY(centroY, a, radio) {
+  return centroY + sin(a) * radio;
+}
+
+function SubirArchivo(event) {
+  let file = event.target.files[0];
+  if (file && file.type.startsWith("image/")) {
+    loadImage(URL.createObjectURL(file), (img) => {
+      IMAGEN = img;
+      console.log("Imagen cargada correctamente");
+      Dibujar();
+    })
+  } else {
+    console.log("El archivo no es una imagen");
+  }
 }
