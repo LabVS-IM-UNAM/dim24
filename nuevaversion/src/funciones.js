@@ -53,7 +53,7 @@ export function combinarImagenes(imagen1, imagen2) {
         for (let columna = 0; columna < ancho; columna++) {
             const indice = (columna + renglon * ancho) * 4;
             for (let i = 0; i < 3; i++) {
-                nuevaImagen.data[indice + i] = (imagen1.data[indice + i] + imagen2.data[indice + i])%255;
+                nuevaImagen.data[indice + i] =clamp(imagen1.data[indice + i] + imagen2.data[indice + i],0,255);
             }
             nuevaImagen.data[indice + 3] = 255;
         }

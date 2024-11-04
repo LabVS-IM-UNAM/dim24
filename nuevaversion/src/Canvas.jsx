@@ -30,18 +30,23 @@ const ImageEditor = () => {
         if (file) {
             const img = new Image();
             img.src = URL.createObjectURL(file);
-
+    
             img.onload = () => {
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext('2d');
-                canvas.width = img.width;
-                canvas.height = img.height;
-
-                // Draw the image to the canvas
-                ctx.drawImage(img, 0, 0);
-                
+    
+                // Define the desired square dimension
+                const squareSize = 500; // Adjust this value to set the square size
+    
+                // Set the canvas to the square dimensions
+                canvas.width = squareSize;
+                canvas.height = squareSize;
+    
+                // Draw the image stretched to fill the square
+                ctx.drawImage(img, 0, 0, squareSize, squareSize);
+    
                 // Save the image data for pixel manipulation
-                const imgData = ctx.getImageData(0, 0, img.width, img.height);
+                const imgData = ctx.getImageData(0, 0, squareSize, squareSize);
                 setImageData(imgData);
             };
         }
@@ -52,17 +57,15 @@ const ImageEditor = () => {
             const modifiedData = new Uint8ClampedArray(imageData.data);
             const ancho = imageData.width;
             const alto = imageData.height;
-            let funciones = []
+            let nuevaImagen = funcionAImagen(imageData,semejanza(1/4,0 ,[0,0]));
+            let funciones = [(x,y)=>[x,y]]
             for(let i = 0; i<vertices; i++){
-                const funcion =(x,y)=>{
-                    return [(Math.cos(Math.PI*2*i/vertices)-x)*proporcion+x,(Math.sin(Math.PI*2*i/vertices)-y)*proporcion+y]
-                };
-                funciones.push(funcion)
+                funciones.push((x,y)=>{
+                    return semejanza(1/4,0 ,[0,0])(x,y);
+                })
             }
 
-            
-
-            const nuevaImagen = Hutchinson(imageData,funciones,iteraciones)
+            nuevaImagen= Hutchinson(nuevaImagen,funciones,iteraciones)
             console.log(imageData)
             const canvas = canvasRef.current;
             const ctx = canvas.getContext('2d');
@@ -73,8 +76,8 @@ const ImageEditor = () => {
     return (
         <div>
             <input type="file" accept="image/*" onChange={cargarImagen	} />
-            <input type="range" min ="3" max = "10" step="1" value = {vertices} onChange = {(event)=>{event.preventDefault(); setVertices(event.target.value)}}/>
-            <input type="range" min ="1" max = "10" value = {iteraciones} onChange = {(event)=>{event.preventDefault(); setIteraciones(event.target.value)}}/>
+            <input type="range" onChange = {(event)=>{event.preventDefault(); setVertices(event.target.value); generarFractal()}}  min ="3" max = "10" step="1" value = {vertices} onChange = {(event)=>{event.preventDefault(); setVertices(event.target.value)}}/>
+            <input type="range" onChange = {(event)=>{event.preventDefault(); setIteraciones(event.target.value); generarFractal()}} min ="0" max = "10" value = {iteraciones} />
             <input type="range" min = "0.1" max = "1" step = "0.1" value = {proporcion} onChange = {(event)=>{event.preventDefault(); setProporcion(event.target.value)}}/>
             <canvas ref={canvasRef} style={{ border: '1px solid black' }} />
             <button onClick={generarFractal}>Generar</button>
