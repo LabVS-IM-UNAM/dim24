@@ -4,17 +4,17 @@ import Poligono from "./Poligono";
 function iteracion(poligono){
     const puntoAnterior=poligono.centroAnterior;
     const punto = poligono.centro;
+    const angulo = poligono.rotacion;
     const diferencia = punto.suma(puntoAnterior.inversoAditivo());
     const difnorm = diferencia.escalar(1/diferencia.abs());
     let poligonos = [];
     for(let i=0; i<poligono.lados; i++){
-        const preTraslador = new Complejo(Math.cos(2*i*Math.PI/poligono.lados), Math.sin(2*i*Math.PI/poligono.lados));
+        const preTraslador = new Complejo(Math.cos(2*i*Math.PI/poligono.lados+angulo), Math.sin(angulo+2*i*Math.PI/poligono.lados));
         const proporcion = poligono.proporcion**(poligono.iteracion);
         const traslador = preTraslador.escalar(proporcion*poligono.unidad+poligono.unidad*proporcion*poligono.proporcion)
-        console.log(traslador, difnorm)
-        if (true){
+        if (!preTraslador.igual(difnorm.inversoAditivo())){
             const centro = punto.suma(traslador);
-            const nuevoPoligono = new Poligono(centro,punto, poligono.lados,poligono.proporcion , poligono.iteracion+1);
+            const nuevoPoligono = new Poligono(centro,punto, poligono.lados,Math.PI+angulo,poligono.proporcion , poligono.iteracion+1);
             poligonos.push(nuevoPoligono);
         }
     }
@@ -34,8 +34,8 @@ export function poligonosFractal(poligonos, iteraciones) {
     }
 }
 
-export function dibujarPoligonos(p,poligonos){
+export function dibujarPoligonos(p, imagen=null,poligonos){
     for(let poligono of poligonos){
-        poligono.dibujar(p)
+        poligono.dibujar(p,imagen)
     }
 }

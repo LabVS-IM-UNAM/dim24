@@ -46,4 +46,14 @@ export class Complejo{
     angulo(){
         return Math.atan2(this.imag, this.real);
     }
+
+    igual(complejo){
+        const real = Math.abs(this.real-complejo.real).toFixed(2);
+        const imag = Math.abs(this.imag-complejo.imag).toFixed(2);
+        if(real == 0 && imag ==0){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

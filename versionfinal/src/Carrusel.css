@@ -1,0 +1,15 @@
+.ant-carousel .slick-dots li {
+    margin: 0 4px !important; /* Fixes spacing between dots */
+  }
+  
+  .ant-carousel .slick-dots li button {
+    background-color: gray;
+    opacity: 1;
+    width: 8px !important;
+    height: 8px !important;
+  }
+  
+  .ant-carousel .slick-dots li.slick-active button {
+    background-color: blue;
+  }
+  
