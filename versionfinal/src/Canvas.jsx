@@ -4,6 +4,8 @@ import p5 from 'p5';
 import { Complejo } from './Complejo';
 import Poligono from './Poligono';
 import { poligonosFractal, dibujarPoligonos } from './fractal';
+import { Button, Slider } from 'antd';
+import { ZoomInOutlined } from '@ant-design/icons';
 
 const Canvas = () => {
     const sketchRef = useRef();
@@ -14,18 +16,18 @@ const Canvas = () => {
     const [imgTexture, setImgTexture] = useState(null);
     const [backgroundColor, setBackgroundColor] = useState('#000000');
     const [fillColor, setFillColor] = useState('#FFFFFF');
+    const [zoom, setZoom] = useState(1);
 
     useEffect(() => {
-        // Este efecto carga una nueva imagen en p5 y la asigna a imgTexture cuando cambia `imagen`
         if (imagen) {
             const loadTexture = (p) => {
                 p.loadImage(imagen.src, (loadedImg) => {
-                    setImgTexture(loadedImg); // Asigna la textura cargada
+                    setImgTexture(loadedImg);
                 });
             };
             const miP5 = new p5((p) => loadTexture(p));
         } else {
-            setImgTexture(null); // Limpia la textura si no hay imagen
+            setImgTexture(null);
         }
     }, [imagen]);
 
@@ -39,8 +41,13 @@ const Canvas = () => {
             p.draw = () => {
                 p.clear();
                 p.background(backgroundColor);
-                p.camera(0, 0, (p.height / 2) / Math.tan(p.PI / 6), 0, 0, 0, 0, 1, 0);
-
+                
+                // Enable orbit control for camera movement
+                p.orbitControl();
+                
+                // Apply zoom level as a scale factor
+                p.scale(zoom);
+                
                 p.noStroke();
                 p.fill(fillColor);
 
@@ -75,7 +82,7 @@ const Canvas = () => {
         return () => {
             miP5.remove();
         };
-    }, [proporcion, iteraciones, lados, imgTexture, backgroundColor, fillColor]);
+    }, [proporcion, iteraciones, lados, imgTexture, backgroundColor, zoom, fillColor]);
 
     return (
         <div style={{ position: 'relative' }}>
@@ -92,6 +99,16 @@ const Canvas = () => {
                 setBackgroundColor={setBackgroundColor} 
                 setFillColor={setFillColor} 
             />
+            <div className='ContenedorSlider' style={{backgroundColor: "white" , width: "50%", height: "1rem", top: "1rem", position: "absolute", left: "25%", borderRadius:"5px"}}>
+                <Slider 
+                    min={0.01} 
+                    max={5} 
+                    step={0.01} 
+                    onChange={(value) => setZoom(value)} 
+                    value={zoom}
+                    style={{marginTop: "0.15rem"}}
+                />
+            </div>
             <div ref={sketchRef}></div>
         </div>
     );

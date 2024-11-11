@@ -154,11 +154,12 @@ const Cajon = ({ lados, setLados, iteraciones, setIteraciones, proporcion, setPr
                             <Upload
                                 name="file"
                                 listType="picture"
-                                showUploadList={false}  // No mostrar la lista de archivos cargados
+                                showUploadList={true}  // No mostrar la lista de archivos cargados
                                 beforeUpload={beforeUpload}
-                                style={{width: "100%"}}
+                                onRemove={()=>setImagen(null)}
+                                maxCount={1}
                             >
-                                <Button style={{marginTop:"1rem", width: "100%"} }>Subir Imagen</Button>
+                                <Button style={{marginTop:"1rem"} }>Subir Imagen</Button>
                             </Upload>
                         </Flex>
                     </Flex>
@@ -197,7 +198,8 @@ const Cajon = ({ lados, setLados, iteraciones, setIteraciones, proporcion, setPr
             </div>
             <div>
                 <h3>¿Cómo funciona?</h3>
-                <p>El programa genera un póligono y en cada iteración, coloca polígonos en cada uno de sus vértices. Estos polígonos pueden estar rellenados de un color o con una imagen que puedes subir.</p>
+                <p>El programa genera un póligono y en cada iteración, coloca polígonos en cada uno de sus vértices. Estos polígonos pueden estar rellos de un color o con una imagen que puedes subir.</p>
+                <p>Puedes cambiar el zoom de la imagen generada moviendo el slider que se encuentra en la parte superior</p>
             </div>
             <div>
                 <h3>Menú</h3>
