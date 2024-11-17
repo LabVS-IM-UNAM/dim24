@@ -13,3 +13,12 @@
     background-color: blue;
   }
   
+  .ant-carousel .slick-prev, .ant-carousel .slick-next {
+    color: black; /* Cambia esto según el color de fondo */
+    font-size: 24px; /* Ajusta el tamaño */
+    z-index: 10; /* Asegúrate de que estén en el frente */
+   
+  }
+  
+
+  

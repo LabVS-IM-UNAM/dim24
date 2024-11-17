@@ -96,7 +96,7 @@ const Cajon = ({ lados, setLados, iteraciones, setIteraciones, proporcion, setPr
     return (
         <>
             <Button icon={<RightOutlined />} onClick={abrir} style={{ position: 'absolute', left: "1rem", top: "1rem" }} />
-            <Drawer title="!Fractalízate!" placement="left" onClose={cerrar} open={open} width={"30%"}>
+            <Drawer title="¡Fractalízate!" placement="left" onClose={cerrar} open={open} width={"30%"}>
                 <Flex vertical>
                     <Tooltip title = "Lados del polígono" placement='top'>
                         <Text style={{ textAlign: 'center' }}>Lados</Text>
@@ -182,29 +182,29 @@ const Cajon = ({ lados, setLados, iteraciones, setIteraciones, proporcion, setPr
             </Button>
             <Modal
             footer={[]}
-            width={500}
+            width={700}
             title="Información"
             open={openInfo}
             onOk={cerrarInfo}
             onCancel={cerrarInfo}
             >
-            <Carousel dotPosition='buttom'>
-            <div>
-                <h1>Bienvenido a fractalizate</h1>
-            </div>
-            <div>
-                <h3>¿Qué es?</h3>
-                <p>Esta es una aplicación de generación de fractales utilizando una imagen.</p>
-            </div>
-            <div>
-                <h3>¿Cómo funciona?</h3>
-                <p>El programa genera un póligono y en cada iteración, coloca polígonos en cada uno de sus vértices. Estos polígonos pueden estar rellos de un color o con una imagen que puedes subir.</p>
-                <p>Puedes cambiar el zoom de la imagen generada moviendo el slider que se encuentra en la parte superior</p>
-            </div>
-            <div>
-                <h3>Menú</h3>
-                <p>A tu izquierda tienes un botón para desplegar el menú. En él encontrarás opciones para cambiar la manera en la que se genera el fractal, aquí hay una breve explicación de qué hacen algunas de ellas:</p>
-                <ul>
+            <Carousel dotPosition="bottom" arrows>
+                <div> {/* Agrega espacio arriba y abajo */}
+                    <h1 style={{marginLeft: "30px", marginRight: "30px"}}>Bienvenido a fractalízate</h1>
+                </div>
+                <div>
+                    <h3  style={{marginLeft: "30px", marginRight: "30px"}}>¿Qué es?</h3>
+                    <p style={{marginLeft: "30px", marginRight: "30px", marginBottom: "30px"}}>Esta es una aplicación de generación de fractales utilizando una imagen.</p>
+                </div>
+                <div>
+                    <h3 style={{marginLeft: "30px", marginRight: "30px"}}>¿Cómo funciona?</h3>
+                    <p style={{marginLeft: "30px", marginRight: "30px"}}>El programa genera un póligono y en cada iteración, coloca polígonos en cada uno de sus vértices. Estos polígonos pueden estar rellos de un color o con una imagen que puedes subir.</p>
+                    <p style={{marginLeft: "30px", marginRight: "30px", marginBottom: "30px"}}>Puedes cambiar el zoom de la imagen generada moviendo el slider que se encuentra en la parte superior</p>
+                </div>
+                <div>
+                    <h3 style={{marginLeft: "30px", marginRight: "30px"}}>Menú</h3>
+                    <p style={{marginLeft: "30px", marginRight: "30px"}}>A tu izquierda tienes un botón para desplegar el menú. En él encontrarás opciones para cambiar la manera en la que se genera el fractal, aquí hay una breve explicación de qué hacen algunas de ellas:</p>
+                    <ul style={{marginLeft: "30px", marginRight: "30px", marginBottom: "30px"}}>
                     <li>
                         <p>Lados: escoge el número de lados que quieres que tenga el polígono.</p>
                     </li>
@@ -214,9 +214,10 @@ const Cajon = ({ lados, setLados, iteraciones, setIteraciones, proporcion, setPr
                     <li>
                         <p>Proporción: elige la proporción que se aplica en cada iteración. Los polígonos que resultan en cada iteración mantienen esta proporción con respecto al polígono anterior.</p>
                     </li>
-                </ul>
-            </div>
-            </Carousel>
+                    </ul>
+                </div>
+                </Carousel>
+
 
             </Modal>
         </>
