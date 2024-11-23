@@ -96,8 +96,8 @@ const Cajon = ({ lados, setLados, iteraciones, setIteraciones, proporcion, setPr
     return (
         <>
             <Button icon={<RightOutlined />} onClick={abrir} style={{ position: 'absolute', left: "1rem", top: "1rem" }} />
-            <Drawer title="¡Fractalízate!" placement="left" onClose={cerrar} open={open} width={"30%"}>
-                <Flex vertical>
+            <Drawer title="Menú" placement="left" onClose={cerrar} open={open} width={"300px"}>
+                <Flex vertical>S
                     <Tooltip title = "Lados del polígono" placement='top'>
                         <Text style={{ textAlign: 'center' }}>Lados</Text>
                     </Tooltip>
@@ -190,16 +190,14 @@ const Cajon = ({ lados, setLados, iteraciones, setIteraciones, proporcion, setPr
             >
             <Carousel dotPosition="bottom" arrows>
                 <div> {/* Agrega espacio arriba y abajo */}
-                    <h1 style={{marginLeft: "30px", marginRight: "30px"}}>Bienvenido a fractalízate</h1>
+                    <h1 style={{textAlign:"center"}}>¡Fractalízate!</h1>
                 </div>
                 <div>
                     <h3  style={{marginLeft: "30px", marginRight: "30px"}}>¿Qué es?</h3>
-                    <p style={{marginLeft: "30px", marginRight: "30px", marginBottom: "30px"}}>Esta es una aplicación de generación de fractales utilizando una imagen.</p>
-                </div>
-                <div>
+                    <p style={{marginLeft: "30px", marginRight: "30px", marginBottom: "30px"}}>Esta es una aplicación para generar fractales usando un color o una imagen. </p>
                     <h3 style={{marginLeft: "30px", marginRight: "30px"}}>¿Cómo funciona?</h3>
-                    <p style={{marginLeft: "30px", marginRight: "30px"}}>El programa genera un póligono y en cada iteración, coloca polígonos en cada uno de sus vértices. Estos polígonos pueden estar rellos de un color o con una imagen que puedes subir.</p>
-                    <p style={{marginLeft: "30px", marginRight: "30px", marginBottom: "30px"}}>Puedes cambiar el zoom de la imagen generada moviendo el slider que se encuentra en la parte superior</p>
+                    <p style={{marginLeft: "30px", marginRight: "30px"}}>El programa genera un póligono y en cada iteración, coloca polígonos en cada uno de sus vértices. Estos polígonos pueden estar rellenos de un color o con la imagen que tú quieras.
+                    Puedes cambiar el zoom de la imagen generada moviendo el slider que se encuentra en la parte superior</p>
                 </div>
                 <div>
                     <h3 style={{marginLeft: "30px", marginRight: "30px"}}>Menú</h3>
