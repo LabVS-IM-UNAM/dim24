@@ -183,7 +183,7 @@ const Cajon = ({ lados, setLados, iteraciones, setIteraciones, proporcion, setPr
             <Modal
             footer={[]}
             width={700}
-            title="Información"
+            title="Info"
             open={openInfo}
             onOk={cerrarInfo}
             onCancel={cerrarInfo}
@@ -191,9 +191,13 @@ const Cajon = ({ lados, setLados, iteraciones, setIteraciones, proporcion, setPr
             <Carousel dotPosition="bottom" arrows>
                 <div> {/* Agrega espacio arriba y abajo */}
                     <h1 style={{textAlign:"center"}}>¡Fractalízate!</h1>
+                    <br />
+                    <h2 style={{textAlign:"center"}}>¡Celebramos las matemáticas con arte y creatividad!</h2>
+                    <br />
+                    <h2 style={{textAlign:"center"}}>¡Feliz día internacional de las matemáticas 2025!</h2>
                 </div>
                 <div>
-                    <h3  style={{marginLeft: "30px", marginRight: "30px"}}>¿Qué es?</h3>
+                    <h3  style={{marginLeft: "30px", marginRight: "30px"}}>¿Qué es esto?</h3>
                     <p style={{marginLeft: "30px", marginRight: "30px", marginBottom: "30px"}}>Esta es una aplicación para generar fractales usando un color o una imagen. </p>
                     <h3 style={{marginLeft: "30px", marginRight: "30px"}}>¿Cómo funciona?</h3>
                     <p style={{marginLeft: "30px", marginRight: "30px"}}>El programa genera un póligono y en cada iteración, coloca polígonos en cada uno de sus vértices. Estos polígonos pueden estar rellenos de un color o con la imagen que tú quieras.
@@ -201,7 +205,7 @@ const Cajon = ({ lados, setLados, iteraciones, setIteraciones, proporcion, setPr
                 </div>
                 <div>
                     <h3 style={{marginLeft: "30px", marginRight: "30px"}}>Menú</h3>
-                    <p style={{marginLeft: "30px", marginRight: "30px"}}>A tu izquierda tienes un botón para desplegar el menú. En él encontrarás opciones para cambiar la manera en la que se genera el fractal, aquí hay una breve explicación de qué hacen algunas de ellas:</p>
+                    <p style={{marginLeft: "30px", marginRight: "30px"}}>A tu izquierda tienes un botón para desplegar el menú. En él encontrarás opciones para cambiar la manera en la que se genera el fractal. Puedes modificar los siguientes parámetros:</p>
                     <ul style={{marginLeft: "30px", marginRight: "30px", marginBottom: "30px"}}>
                     <li>
                         <p>Lados: escoge el número de lados que quieres que tenga el polígono.</p>
@@ -214,6 +218,15 @@ const Cajon = ({ lados, setLados, iteraciones, setIteraciones, proporcion, setPr
                     </li>
                     </ul>
                 </div>
+
+                <div>
+                    <h3  style={{marginLeft: "30px", marginRight: "30px"}}>Créditos</h3>
+                    <p style={{marginLeft: "30px", marginRight: "30px", marginBottom: "30px"}}>Esta aplicación está siendo desarrollada en el <strong>Laboratorio de Visualización y Sonorización de Matemáticas</strong>, un proyecto del <strong>Instituto de Matemáticas de la UNAM</strong>. </p>
+                    
+                    <p style={{marginLeft: "30px", marginRight: "30px"}}>En su desarrollo han participado Emilio Junoy de Juambelz, Iñaki Mendieta Noguez, 
+                    Hugo Giovani Ramírez, Pablo de la Fuente Parres, Dylan Alexis Facio y Darío Alatorre Guzmán, a partir de una <a href="https://penelope.matem.unam.mx/fractalizate/" target = "blank"> versión anterior</a>  desarrollada por este último y Bruno Cisneros de la Cruz.</p>
+                </div>
+
                 </Carousel>
 
 
